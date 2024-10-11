@@ -12,6 +12,7 @@ use super::{
     variables::NenyrVariables,
 };
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct CentralContext {
     imports: Option<NenyrImports>,
     typefaces: Option<NenyrTypefaces>,

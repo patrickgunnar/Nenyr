@@ -13,6 +13,7 @@ use super::{
     variables::NenyrVariables,
 };
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct LayoutContext {
     layout_name: String,
     aliases: Option<NenyrAliases>,

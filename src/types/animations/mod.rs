@@ -1,15 +1,17 @@
 use indexmap::IndexMap;
 
 use crate::validators::{
-    i64_vector::NenyrI64Validator, identifier::NenyrIdentifierValidator,
+    i64_vector::NenyrF64Validator, identifier::NenyrIdentifierValidator,
     property::NenyrPropertyValidator, style_syntax::NenyrStyleSyntaxValidator,
 };
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct NenyrKeyframeFraction {
     fraction_stops: Vec<i64>,
     fraction_properties: Option<IndexMap<String, String>>,
 }
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct NenyrAnimation {
     animation_name: String,
     progressive_count: Option<i64>,
@@ -28,4 +30,4 @@ impl NenyrStyleSyntaxValidator for NenyrAnimation {}
 
 impl NenyrPropertyValidator for NenyrKeyframeFraction {}
 impl NenyrStyleSyntaxValidator for NenyrKeyframeFraction {}
-impl NenyrI64Validator for NenyrKeyframeFraction {}
+impl NenyrF64Validator for NenyrKeyframeFraction {}

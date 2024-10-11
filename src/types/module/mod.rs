@@ -13,6 +13,7 @@ use super::{
     variables::NenyrVariables,
 };
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct ModuleContext {
     module_name: String,
     extending_from: Option<String>,

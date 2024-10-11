@@ -5,6 +5,7 @@ use crate::validators::{
     style_pattern::NenyrStylePatternValidator, style_syntax::NenyrStyleSyntaxValidator,
 };
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct NenyrStyleClass {
     class_name: String,
     deriving_from: Option<String>,

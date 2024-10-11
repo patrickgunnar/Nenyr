@@ -1,36 +1,34 @@
-/**
- * `NenyrErrorKind` is an enumeration that categorizes errors that can occur
- * within the Nenyr framework. This enum provides a structured way to identify
- * and handle different types of errors that may arise during parsing,
- * validation, or execution of Nenyr code.
- *
- * By categorizing errors into distinct types, developers can implement
- * more precise error handling strategies, allowing for tailored responses
- * to specific error conditions.
- *
- * # Variants
- *
- * - `SyntaxError`: Indicates that there is a syntax-related issue within
- *   the Nenyr code. This can include missing delimiters, incorrect
- *   formatting, or any other structural problems that prevent the code
- *   from being parsed correctly.
- *
- * - `ValidationError`: Represents an error that occurs during the
- *   validation phase. This variant is used when the Nenyr code fails to
- *   meet certain semantic rules or constraints defined within the framework.
- *   This might involve checks for correct data types, invalid values, or
- *   other logical inconsistencies.
- *
- * - `MissingContext`: Signals that a required context for processing the
- *   Nenyr code is missing. This may occur if necessary contextual
- *   information has not been provided or is not accessible at the time
- *   of execution.
- *
- * - `Other`: A catch-all variant for errors that do not fit into the
- *   above categories. This can be used for any unexpected errors or
- *   conditions that do not have a specific type assigned to them.
- */
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+/// `NenyrErrorKind` is an enumeration that categorizes errors that can occur
+/// within the Nenyr framework. This enum provides a structured way to identify
+/// and handle different types of errors that may arise during parsing,
+/// validation, or execution of Nenyr code.
+///
+/// By categorizing errors into distinct types, developers can implement
+/// more precise error handling strategies, allowing for tailored responses
+/// to specific error conditions.
+///
+/// # Variants
+///
+/// - `SyntaxError`: Indicates that there is a syntax-related issue within
+///   the Nenyr code. This can include missing delimiters, incorrect
+///   formatting, or any other structural problems that prevent the code
+///   from being parsed correctly.
+///
+/// - `ValidationError`: Represents an error that occurs during the
+///   validation phase. This variant is used when the Nenyr code fails to
+///   meet certain semantic rules or constraints defined within the framework.
+///   This might involve checks for correct data types, invalid values, or
+///   other logical inconsistencies.
+///
+/// - `MissingContext`: Signals that a required context for processing the
+///   Nenyr code is missing. This may occur if necessary contextual
+///   information has not been provided or is not accessible at the time
+///   of execution.
+///
+/// - `Other`: A catch-all variant for errors that do not fit into the
+///   above categories. This can be used for any unexpected errors or
+///   conditions that do not have a specific type assigned to them.
+#[derive(Debug, PartialEq, Clone)]
 pub enum NenyrErrorKind {
     SyntaxError,
     ValidationError,
@@ -38,63 +36,61 @@ pub enum NenyrErrorKind {
     Other,
 }
 
-/**
- * `NenyrError` is a structure that encapsulates detailed information about errors
- * that occur during the processing of Nenyr code. This struct is designed to provide
- * comprehensive error reporting, ensuring that users receive the most relevant
- * information about errors encountered in their code.
- *
- * By including contextual information about the error, such as surrounding lines
- * of code and suggestions for resolution, `NenyrError` enhances the developer
- * experience by making it easier to identify and fix issues.
- *
- * # Fields
- *
- * - `suggestion`: An optional field that provides personalized suggestions
- *   on how to fix the error. This can help users quickly resolve issues
- *   by offering actionable advice.
- *
- * - `line_before`: An optional string that contains the line of code
- *   preceding the line where the error occurred. This provides context
- *   for understanding the error in relation to surrounding code.
- *
- * - `line_after`: An optional string that contains the line of code
- *   following the line where the error occurred. Similar to `line_before`,
- *   this helps in providing context for the error.
- *
- * - `context_name`: An optional string that indicates the name of the
- *   context in which the error occurred. This can help users understand
- *   where in their codebase the issue is located.
- *
- * - `context_path`: A string that specifies the file path of the
- *   `.nyr` file where the error occurred. This is crucial for locating
- *   the source of the error within the project structure.
- *
- * - `error_line`: A string representation of the actual line of code
- *   where the error occurred. This provides the exact context of the error,
- *   allowing users to see the problematic code directly.
- *
- * - `error_message`: A string that provides a personalized message
- *   explaining the reason for the error. This is intended to help users
- *   understand what went wrong and why.
- *
- * - `error_kind`: An instance of `NenyrErrorKind` that categorizes the
- *   error. This enum helps in identifying the type of error that occurred,
- *   enabling more specific error handling.
- *
- * - `error_on_line`: A `usize` indicating the line number where the error
- *   occurred. This can be particularly useful for debugging and error
- *   reporting in user interfaces.
- *
- * - `error_on_col`: A `usize` indicating the column number where the
- *   error occurred. This level of detail helps users pinpoint the exact
- *   location of the error within the line.
- *
- * - `error_on_pos`: A `usize` indicating the position (or index) in the
- *   content file where the error occurred. This provides the most granular
- *   detail about the error's location.
- */
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+/// `NenyrError` is a structure that encapsulates detailed information about errors
+/// that occur during the processing of Nenyr code. This struct is designed to provide
+/// comprehensive error reporting, ensuring that users receive the most relevant
+/// information about errors encountered in their code.
+///
+/// By including contextual information about the error, such as surrounding lines
+/// of code and suggestions for resolution, `NenyrError` enhances the developer
+/// experience by making it easier to identify and fix issues.
+///
+/// # Fields
+///
+/// - `suggestion`: An optional field that provides personalized suggestions
+///   on how to fix the error. This can help users quickly resolve issues
+///   by offering actionable advice.
+///
+/// - `line_before`: An optional string that contains the line of code
+///   preceding the line where the error occurred. This provides context
+///   for understanding the error in relation to surrounding code.
+///
+/// - `line_after`: An optional string that contains the line of code
+///   following the line where the error occurred. Similar to `line_before`,
+///   this helps in providing context for the error.
+///
+/// - `context_name`: An optional string that indicates the name of the
+///   context in which the error occurred. This can help users understand
+///   where in their codebase the issue is located.
+///
+/// - `context_path`: A string that specifies the file path of the
+///   `.nyr` file where the error occurred. This is crucial for locating
+///   the source of the error within the project structure.
+///
+/// - `error_line`: A string representation of the actual line of code
+///   where the error occurred. This provides the exact context of the error,
+///   allowing users to see the problematic code directly.
+///
+/// - `error_message`: A string that provides a personalized message
+///   explaining the reason for the error. This is intended to help users
+///   understand what went wrong and why.
+///
+/// - `error_kind`: An instance of `NenyrErrorKind` that categorizes the
+///   error. This enum helps in identifying the type of error that occurred,
+///   enabling more specific error handling.
+///
+/// - `error_on_line`: A `usize` indicating the line number where the error
+///   occurred. This can be particularly useful for debugging and error
+///   reporting in user interfaces.
+///
+/// - `error_on_col`: A `usize` indicating the column number where the
+///   error occurred. This level of detail helps users pinpoint the exact
+///   location of the error within the line.
+///
+/// - `error_on_pos`: A `usize` indicating the position (or index) in the
+///   content file where the error occurred. This provides the most granular
+///   detail about the error's location.
+#[derive(Debug, PartialEq, Clone)]
 pub struct NenyrError {
     pub suggestion: Option<String>,
     pub line_before: Option<String>,
