@@ -78,6 +78,7 @@ mod tests {
         let invalid_breakpoints = vec![
             "abc", "100", "100pxpx", "12emem", "100px%", "200pp", "8wh", "&3#x", "none", "a44di",
             "wjew", "¨54", "&#21", "8s8", "55", ")(8", "dhw", "@#", "#000000", "2635ss", "&$#swj",
+            "",
         ];
 
         for invalid_breakpoint in invalid_breakpoints {
@@ -85,6 +86,34 @@ mod tests {
                 !breakpoint.is_valid_breakpoint(invalid_breakpoint),
                 "Breakpoint '{}' should be invalid.",
                 invalid_breakpoint
+            );
+        }
+    }
+
+    #[test]
+    fn performance_test_valid_large_vector() {
+        let breakpoint = Breakpoint::new();
+        let valid_breakpoints: Vec<String> = (0..1000).map(|i| format!("{}px", i)).collect();
+
+        for valid_breakpoint in valid_breakpoints {
+            assert!(
+                breakpoint.is_valid_breakpoint(&valid_breakpoint),
+                "Breakpoint '{}' should be valid.",
+                valid_breakpoint
+            );
+        }
+    }
+
+    #[test]
+    fn performance_test_invalid_large_vector() {
+        let breakpoint = Breakpoint::new();
+        let valid_breakpoints: Vec<String> = (0..1000).map(|i| format!("{}lp", i)).collect();
+
+        for valid_breakpoint in valid_breakpoints {
+            assert!(
+                !breakpoint.is_valid_breakpoint(&valid_breakpoint),
+                "Breakpoint '{}' should be valid.",
+                valid_breakpoint
             );
         }
     }
