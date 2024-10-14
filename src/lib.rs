@@ -1,4 +1,10 @@
 use error::{NenyrError, NenyrErrorKind};
+use lexer::Lexer;
+
+mod converters {
+    pub mod property;
+    pub mod style_pattern;
+}
 
 mod interfaces {
     pub mod aliases;
@@ -11,7 +17,7 @@ mod interfaces {
     pub mod variables;
 }
 
-mod types {
+mod modules {
     pub mod aliases;
     pub mod animations;
     pub mod ast;
@@ -31,27 +37,23 @@ mod validators {
     pub mod i64_vector;
     pub mod identifier;
     pub mod import;
-    pub mod property;
-    pub mod style_pattern;
     pub mod style_syntax;
     pub mod typeface;
     pub mod variable_value;
 }
 
 mod error;
+mod lexer;
+mod tokens;
 
-pub fn throw_error() -> NenyrError {
-    NenyrError::new(
-        Some("suggestion".to_string()),
-        Some("line before".to_string()),
-        Some("line after".to_string()),
-        Some("context name".to_string()),
-        "context path".to_string(),
-        "error line".to_string(),
-        "error message".to_string(),
-        NenyrErrorKind::SyntaxError,
-        10,
-        5,
-        20,
-    )
+pub struct NenyrParser<'a> {
+    lexer: Lexer<'a>,
+}
+
+impl<'a> NenyrParser<'a> {
+    pub fn new(raw_nenyr: &'a str) -> Self {
+        let lexer = Lexer::new(raw_nenyr);
+
+        Self { lexer }
+    }
 }

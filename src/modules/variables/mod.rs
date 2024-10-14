@@ -11,3 +11,13 @@ pub struct NenyrVariables {
 
 impl NenyrIdentifierValidator for NenyrVariables {}
 impl NenyrVariableValueValidator for NenyrVariables {}
+
+impl NenyrVariables {
+    pub fn new() -> Self {
+        Self {
+            values: IndexMap::new(),
+        }
+    }
+
+    pub fn process_variables(&self) {}
+}

@@ -12,3 +12,14 @@ pub struct NenyrThemes {
 
 impl NenyrIdentifierValidator for NenyrThemes {}
 impl NenyrVariableValueValidator for NenyrThemes {}
+
+impl NenyrThemes {
+    pub fn new() -> Self {
+        Self {
+            light_schema: None,
+            dark_schema: None,
+        }
+    }
+
+    pub fn process_themes(&self) {}
+}

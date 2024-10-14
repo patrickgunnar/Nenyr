@@ -8,3 +8,13 @@ pub struct NenyrImports {
 }
 
 impl NenyrImportValidator for NenyrImports {}
+
+impl NenyrImports {
+    pub fn new() -> Self {
+        Self {
+            values: HashSet::new(),
+        }
+    }
+
+    pub fn process_imports(&self) {}
+}

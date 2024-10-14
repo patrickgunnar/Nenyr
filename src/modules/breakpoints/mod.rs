@@ -12,3 +12,14 @@ pub struct NenyrBreakpoints {
 
 impl NenyrIdentifierValidator for NenyrBreakpoints {}
 impl NenyrBreakpointValidator for NenyrBreakpoints {}
+
+impl NenyrBreakpoints {
+    pub fn new() -> Self {
+        Self {
+            mobile_first: None,
+            desktop_first: None,
+        }
+    }
+
+    pub fn process_breakpoints(&self) {}
+}

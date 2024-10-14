@@ -9,3 +9,13 @@ pub struct NenyrTypefaces {
 
 impl NenyrIdentifierValidator for NenyrTypefaces {}
 impl NenyrTypefaceValidator for NenyrTypefaces {}
+
+impl NenyrTypefaces {
+    pub fn new() -> Self {
+        Self {
+            values: IndexMap::new(),
+        }
+    }
+
+    pub fn process_typefaces(&self) {}
+}

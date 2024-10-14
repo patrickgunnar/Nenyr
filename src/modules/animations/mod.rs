@@ -1,8 +1,11 @@
 use indexmap::IndexMap;
 
-use crate::validators::{
-    i64_vector::NenyrF64Validator, identifier::NenyrIdentifierValidator,
-    property::NenyrPropertyValidator, style_syntax::NenyrStyleSyntaxValidator,
+use crate::{
+    converters::property::NenyrPropertyConverter,
+    validators::{
+        i64_vector::NenyrF64Validator, identifier::NenyrIdentifierValidator,
+        style_syntax::NenyrStyleSyntaxValidator,
+    },
 };
 
 #[derive(Debug, PartialEq, Clone)]
@@ -13,7 +16,7 @@ pub struct NenyrKeyframeFraction {
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct NenyrAnimation {
-    animation_name: String,
+    animation_name: Option<String>,
     progressive_count: Option<i64>,
 
     fraction_keyframe: Option<Vec<NenyrKeyframeFraction>>,
@@ -25,9 +28,25 @@ pub struct NenyrAnimation {
 }
 
 impl NenyrIdentifierValidator for NenyrAnimation {}
-impl NenyrPropertyValidator for NenyrAnimation {}
 impl NenyrStyleSyntaxValidator for NenyrAnimation {}
+impl NenyrPropertyConverter for NenyrAnimation {}
 
-impl NenyrPropertyValidator for NenyrKeyframeFraction {}
 impl NenyrStyleSyntaxValidator for NenyrKeyframeFraction {}
 impl NenyrF64Validator for NenyrKeyframeFraction {}
+impl NenyrPropertyConverter for NenyrKeyframeFraction {}
+
+impl NenyrAnimation {
+    pub fn new() -> Self {
+        Self {
+            animation_name: None,
+            progressive_count: None,
+            fraction_keyframe: None,
+            progressive_keyframe: None,
+            from_keyframe: None,
+            halfway_keyframe: None,
+            to_keyframe: None,
+        }
+    }
+
+    pub fn process_animation(&self) {}
+}
