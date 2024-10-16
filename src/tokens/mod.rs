@@ -1,5 +1,21 @@
 #[derive(Debug, PartialEq, Clone)]
 pub enum NenyrTokens {
+    // Value collectors
+    Unknown(char),
+    StringLiteral(String),
+    Number(i64),
+
+    // Syntax tokens
+    ParenthesisOpen,
+    ParenthesisClose,
+    CurlyBracketOpen,
+    CurlyBracketClose,
+    SquareBracketOpen,
+    SquareBracketClose,
+    Comma,
+    Colon,
+    EndOfLine,
+
     // Style Patterns
     Stylesheet,
     Hover,
