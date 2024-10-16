@@ -36,6 +36,71 @@ pub enum NenyrErrorKind {
     Other,
 }
 
+/// Represents detailed error tracing information within a Nenyr document.
+///
+/// This struct captures the context of an error in the parsing or processing of Nenyr DSL code,
+/// providing line and column information along with the surrounding lines for enhanced debugging.
+///
+/// It helps pinpoint the exact position of an error by including the line content before and after
+/// the error, as well as the error line itself. This contextual data allows for precise reporting
+/// and tracing during error handling.
+///
+/// # Fields
+///
+/// - `line_before`: The content of the line directly preceding the error line (if available), useful for context.
+/// - `line_after`: The content of the line directly following the error line (if available), useful for context.
+/// - `error_line`: The content of the line where the error occurred (if available).
+/// - `error_on_line`: The 1-based line number where the error occurred.
+/// - `error_on_col`: The 1-based column number where the error occurred.
+/// - `error_on_pos`: The byte offset from the start of the file where the error occurred.
+#[derive(Debug, PartialEq, Clone)]
+pub struct NenyrErrorTracing {
+    pub line_before: Option<String>,
+    pub line_after: Option<String>,
+    pub error_line: Option<String>,
+    pub error_on_line: usize,
+    pub error_on_col: usize,
+    pub error_on_pos: usize,
+}
+
+impl NenyrErrorTracing {
+    /// Constructs a new `NenyrErrorTracing` instance.
+    ///
+    /// This constructor allows setting all the error context information, including the lines
+    /// before and after the error, the specific error line, and the exact position of the error in terms of
+    /// line number, column number, and byte position.
+    ///
+    /// # Parameters
+    ///
+    /// - `line_before`: The line content before the error (optional).
+    /// - `line_after`: The line content after the error (optional).
+    /// - `error_line`: The line content where the error occurred (optional).
+    /// - `error_on_line`: The 1-based line number where the error occurred.
+    /// - `error_on_col`: The 1-based column number where the error occurred.
+    /// - `error_on_pos`: The byte offset from the start of the file where the error occurred.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `NenyrErrorTracing` struct populated with the provided context information.
+    pub fn new(
+        line_before: Option<String>,
+        line_after: Option<String>,
+        error_line: Option<String>,
+        error_on_line: usize,
+        error_on_col: usize,
+        error_on_pos: usize,
+    ) -> Self {
+        Self {
+            line_before,
+            line_after,
+            error_line,
+            error_on_line,
+            error_on_col,
+            error_on_pos,
+        }
+    }
+}
+
 /// `NenyrError` is a structure that encapsulates detailed information about errors
 /// that occur during the processing of Nenyr code. This struct is designed to provide
 /// comprehensive error reporting, ensuring that users receive the most relevant
@@ -93,44 +158,29 @@ pub enum NenyrErrorKind {
 #[derive(Debug, PartialEq, Clone)]
 pub struct NenyrError {
     pub suggestion: Option<String>,
-    pub line_before: Option<String>,
-    pub line_after: Option<String>,
     pub context_name: Option<String>,
     pub context_path: String,
-    pub error_line: String,
     pub error_message: String,
     pub error_kind: NenyrErrorKind,
-    pub error_on_line: usize,
-    pub error_on_col: usize,
-    pub error_on_pos: usize,
+    pub error_tracing: NenyrErrorTracing,
 }
 
 impl NenyrError {
     pub(crate) fn new(
         suggestion: Option<String>,
-        line_before: Option<String>,
-        line_after: Option<String>,
         context_name: Option<String>,
         context_path: String,
-        error_line: String,
         error_message: String,
         error_kind: NenyrErrorKind,
-        error_on_line: usize,
-        error_on_col: usize,
-        error_on_pos: usize,
+        error_tracing: NenyrErrorTracing,
     ) -> Self {
         Self {
             suggestion,
-            line_before,
-            line_after,
             context_name,
             context_path,
-            error_line,
             error_message,
             error_kind,
-            error_on_line,
-            error_on_col,
-            error_on_pos,
+            error_tracing,
         }
     }
 }
@@ -139,19 +189,23 @@ impl NenyrError {
 mod tests {
     use crate::error::{NenyrError, NenyrErrorKind};
 
+    use super::NenyrErrorTracing;
+
     fn create_all_fields_error() -> NenyrError {
         NenyrError::new(
             Some("suggestion".to_string()),
-            Some("line before".to_string()),
-            Some("line after".to_string()),
             Some("context name".to_string()),
             "context path".to_string(),
-            "error line".to_string(),
             "error message".to_string(),
             NenyrErrorKind::SyntaxError,
-            10,
-            5,
-            20,
+            NenyrErrorTracing::new(
+                Some("line before".to_string()),
+                Some("line after".to_string()),
+                Some("error line".to_string()),
+                10,
+                5,
+                20,
+            ),
         )
     }
 
@@ -159,15 +213,10 @@ mod tests {
         NenyrError::new(
             None,
             None,
-            None,
-            None,
             "context path".to_string(),
-            "error line".to_string(),
             "error message".to_string(),
             NenyrErrorKind::SyntaxError,
-            10,
-            5,
-            20,
+            NenyrErrorTracing::new(None, None, None, 10, 5, 20),
         )
     }
 
@@ -176,16 +225,25 @@ mod tests {
         let error = create_all_fields_error();
 
         assert_eq!(error.suggestion, Some("suggestion".to_string()));
-        assert_eq!(error.line_before, Some("line before".to_string()));
-        assert_eq!(error.line_after, Some("line after".to_string()));
         assert_eq!(error.context_name, Some("context name".to_string()));
         assert_eq!(error.context_path, "context path".to_string());
-        assert_eq!(error.error_line, "error line".to_string());
         assert_eq!(error.error_message, "error message".to_string());
         assert_eq!(error.error_kind, NenyrErrorKind::SyntaxError);
-        assert_eq!(error.error_on_line, 10);
-        assert_eq!(error.error_on_col, 5);
-        assert_eq!(error.error_on_pos, 20);
+        assert_eq!(
+            error.error_tracing.line_before,
+            Some("line before".to_string())
+        );
+        assert_eq!(
+            error.error_tracing.line_after,
+            Some("line after".to_string())
+        );
+        assert_eq!(
+            error.error_tracing.error_line,
+            Some("error line".to_string())
+        );
+        assert_eq!(error.error_tracing.error_on_line, 10);
+        assert_eq!(error.error_tracing.error_on_col, 5);
+        assert_eq!(error.error_tracing.error_on_pos, 20);
     }
 
     #[test]
@@ -193,16 +251,16 @@ mod tests {
         let error = create_none_fields_error();
 
         assert_eq!(error.suggestion, None);
-        assert_eq!(error.line_before, None);
-        assert_eq!(error.line_after, None);
         assert_eq!(error.context_name, None);
         assert_eq!(error.context_path, "context path".to_string());
-        assert_eq!(error.error_line, "error line".to_string());
         assert_eq!(error.error_message, "error message".to_string());
         assert_eq!(error.error_kind, NenyrErrorKind::SyntaxError);
-        assert_eq!(error.error_on_line, 10);
-        assert_eq!(error.error_on_col, 5);
-        assert_eq!(error.error_on_pos, 20);
+        assert_eq!(error.error_tracing.error_line, None);
+        assert_eq!(error.error_tracing.line_before, None);
+        assert_eq!(error.error_tracing.line_after, None);
+        assert_eq!(error.error_tracing.error_on_line, 10);
+        assert_eq!(error.error_tracing.error_on_col, 5);
+        assert_eq!(error.error_tracing.error_on_pos, 20);
     }
 
     #[test]
@@ -241,7 +299,7 @@ mod tests {
 
     #[test]
     fn test_nenyr_error_debug() {
-        let printed_error = r#"NenyrError { suggestion: Some("suggestion"), line_before: Some("line before"), line_after: Some("line after"), context_name: Some("context name"), context_path: "context path", error_line: "error line", error_message: "error message", error_kind: SyntaxError, error_on_line: 10, error_on_col: 5, error_on_pos: 20 }"#;
+        let printed_error = r#"NenyrError { suggestion: Some("suggestion"), context_name: Some("context name"), context_path: "context path", error_message: "error message", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some("line before"), line_after: Some("line after"), error_line: Some("error line"), error_on_line: 10, error_on_col: 5, error_on_pos: 20 } }"#;
         let all_fields_error = create_all_fields_error();
 
         assert_eq!(printed_error.to_string(), format!("{:?}", all_fields_error));

@@ -1,9 +1,46 @@
 #[derive(Debug, PartialEq, Clone)]
 pub enum NenyrTokens {
+    // Nenyr keywords
+    Construct,
+    Central,
+    Layout,
+    Module,
+    Declare,
+    Extending,
+    Deriving,
+
+    // Nenyr methods
+    Imports,
+    Typefaces,
+    Breakpoints,
+    Themes,
+    Aliases,
+    Variables,
+    Class,
+
+    // Import pattern
+    Import,
+
+    // Breakpoints pattern
+    MobileFirst,
+    DesktopFirst,
+
+    // Themes pattern
+    Light,
+    Dark,
+
+    // Animation pattern
+    Fraction,
+    Progressive,
+    From,
+    Halfway,
+    To,
+
     // Value collectors
     Unknown(char),
     StringLiteral(String),
     Number(i64),
+    Identifier(String),
 
     // Syntax tokens
     ParenthesisOpen,
@@ -15,6 +52,8 @@ pub enum NenyrTokens {
     Comma,
     Colon,
     EndOfLine,
+    True,
+    False,
 
     // Style Patterns
     Stylesheet,
