@@ -37,7 +37,7 @@ pub enum NenyrTokens {
     To,
 
     // Value collectors
-    Unknown(char),
+    //Unknown(char),
     StringLiteral(String),
     Number(i64),
     Identifier(String),
@@ -52,6 +52,7 @@ pub enum NenyrTokens {
     Comma,
     Colon,
     EndOfLine,
+    StartOfFile,
     True,
     False,
 

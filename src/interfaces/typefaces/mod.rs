@@ -1,1 +1,3 @@
-pub trait NenyrTypefacesCreator {}
+use crate::NenyrParser;
+
+impl<'a> NenyrParser<'a> {}

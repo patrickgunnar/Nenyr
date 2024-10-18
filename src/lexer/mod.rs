@@ -1,32 +1,35 @@
-use crate::{error::NenyrErrorTracing, tokens::NenyrTokens};
+use crate::{
+    error::{NenyrError, NenyrErrorKind, NenyrErrorTracing},
+    tokens::NenyrTokens,
+    NenyrResult,
+};
 
-/// The `Lexer` struct is responsible for tokenizing the Nenyr language input.
-/// It takes raw source code written in Nenyr and breaks it into tokens,
-/// which are the smallest units of the language, such as keywords, identifiers,
-/// symbols, numbers, and strings.
+/// The `Lexer` struct is responsible for tokenizing input written in the Nenyr language.
+/// It takes raw source code and breaks it into tokens, which are the smallest units of the language,
+/// such as keywords, identifiers, symbols, numbers, and strings.
 ///
-/// The `Lexer` operates by maintaining its current position in the input,
-/// as well as tracking the current line and column for better error reporting
-/// and debugging purposes. It handles both single-line and block comments,
-/// skips over whitespace, and identifies various language constructs.
+/// The `Lexer` maintains its current position in the input while tracking the current line and column
+/// for improved error reporting and debugging. It can handle both single-line and block comments,
+/// skips whitespace, and identifies various language constructs.
 ///
-/// The lexer returns `NenyrTokens` for each valid token it identifies in the input.
-/// If an unrecognized character or sequence is encountered, it returns
-/// an `Unknown` token, and will eventually support more detailed error handling
-/// for invalid input.
+/// For each valid token identified in the input, the lexer returns a `NenyrTokens` instance.
+/// If it encounters an unrecognized character or sequence, it returns an `Unknown` token,
+/// with plans to implement more detailed error handling for invalid inputs in the future.
 ///
 /// # Fields
 ///
-/// * `raw_nenyr`: A reference to the raw source code in the Nenyr language.
-///   This is a borrowed string slice (`&'a str`), and the lexer operates directly
-///   on this input without making a copy, ensuring efficient performance on large inputs.
-/// * `position`: The current byte position in the input string. This is used to
-///   track progress through the input and retrieve the next character or token.
-/// * `line`: The current line number in the input, used for error reporting and debugging.
-///   This is incremented every time the lexer encounters a newline character (`'\n'`).
-/// * `column`: The current column number in the current line, used for error
-///   reporting and tracking. This is incremented for each character and reset when
-///   a new line is encountered.
+/// * `raw_nenyr`: A reference to the raw source code written in the Nenyr language.
+///   This is a borrowed string slice (`&'a str`), enabling the lexer to operate directly
+///   on the input without making a copy, which ensures efficient performance even with large inputs.
+/// * `position`: The current byte position in the input string, used to track progress
+///   through the input and retrieve the next character or token.
+/// * `line`: The current line number in the input, starting at 1 and incremented with each newline character (`'\n'`).
+/// * `column`: The current column number in the current line, used for error reporting.
+///   It increments for each character processed and resets to 1 when a newline is encountered.
+/// * `context_path`: A reference to a string representing the Nenyr context file path,
+///   which may provide additional information about the source code's origin.
+/// * `context_name`: An optional `String` representing the name of the Nenyr context,
+///   which can be useful for distinguishing between different scopes or modules within the Nenyr document.
 #[derive(Debug, PartialEq, Clone)]
 pub struct Lexer<'a> {
     /// The raw input source written in Nenyr language, borrowed for the lifetime of the lexer.
@@ -38,28 +41,49 @@ pub struct Lexer<'a> {
     line: usize,
     /// The current column number within the current line, resets to 1 after each newline.
     column: usize,
+    /// The context path for the Nenyr context, providing additional information about the source's origin.
+    context_path: &'a str,
+    /// An optional name of the context, useful for distinguishing between different scopes or modules in the Nenyr document.
+    context_name: Option<String>,
 }
 
 impl<'a> Lexer<'a> {
-    /// Constructs a new `Lexer` from the provided raw input string in the Nenyr language.
+    /// Constructs a new `Lexer` instance from the provided raw input string in the Nenyr language.
     ///
-    /// The lexer starts at the beginning of the input, with the position set to 0, and
-    /// the line and column counters initialized to the first line and first column.
+    /// The lexer initializes its state at the beginning of the input, setting the position to 0,
+    /// and initializing the line and column counters to represent the first line and first column.
     ///
     /// # Parameters
     ///
-    /// * `raw_nenyr`: A string slice representing the raw input source in the Nenyr language.
+    /// * `raw_nenyr`: A string slice (`&'a str`) representing the raw input source in the Nenyr language.
+    /// * `context_path`: A string slice (`&'a str`) indicating the context path, which may provide additional
+    ///   information regarding the source's origin.
     ///
     /// # Returns
     ///
-    /// A `Lexer` struct ready to tokenize the input string.
-    pub fn new(raw_nenyr: &'a str) -> Self {
+    /// Returns a `Lexer` struct that is ready to tokenize the provided input string.
+    pub fn new(raw_nenyr: &'a str, context_path: &'a str) -> Self {
         Self {
             raw_nenyr,
+            context_path,
             position: 0,
             line: 1,
             column: 1,
+            context_name: None,
         }
+    }
+
+    /// Sets the name of the Nenyr context.
+    ///
+    /// This method allows updating the `context_name` field with a new value, which can be useful for
+    /// distinguishing between different scopes or modules within the Nenyr source code.
+    ///
+    /// # Parameters
+    ///
+    /// * `context_name`: An `Option<String>` that represents the name of the context. If `None` is provided,
+    ///   the context name will be cleared.
+    pub fn set_context_name(&mut self, context_name: Option<String>) {
+        self.context_name = context_name;
     }
 
     /// Traces the lexer’s current line by retrieving the text of the line at the
@@ -94,13 +118,46 @@ impl<'a> Lexer<'a> {
     /// A `NenyrErrorTracing` struct that contains the context around the current
     /// lexer position for debugging purposes.
     pub fn trace_lexer_position(&self) -> NenyrErrorTracing {
+        let line_before = if let Some(idx) = self.line.checked_sub(2) {
+            self.trace_lexer_line(idx)
+        } else {
+            None
+        };
+
+        let error_line = if let Some(idx) = self.line.checked_sub(1) {
+            self.trace_lexer_line(idx)
+        } else {
+            None
+        };
+
         NenyrErrorTracing::new(
-            self.trace_lexer_line(self.position - 2),
-            self.trace_lexer_line(self.position),
-            self.trace_lexer_line(self.position - 1),
+            line_before,
+            self.trace_lexer_line(self.line),
+            error_line,
             self.line,
             self.column,
             self.position,
+        )
+    }
+
+    /// Raises an error when an unknown or invalid token is encountered during lexing.
+    ///
+    /// This method generates a `NenyrError` when the lexer detects an unknown token
+    /// or an invalid character that doesn't match any expected patterns. The error
+    /// contains contextual information, such as the name of the current context,
+    /// the file path being processed, the type of error, and a trace of the lexer's
+    /// position to help pinpoint where the error occurred.
+    ///
+    /// This method is generally called when the lexer is unable to process certain
+    /// characters in the input stream, indicating a syntax issue in the source code.
+    fn raise_unknown_token_error(&self, unknown_token: char) -> NenyrError {
+        NenyrError::new(
+            Some(format!("To resolve the error, please remove the unsupported token `{}` from your Nenyr code and revalidate. Ensure all tokens comply with Nenyr syntax to avoid future issues.", unknown_token)),
+            self.context_name.to_owned(),
+            self.context_path.to_string(),
+            format!("The current token `{}` is not supported within Nenyr syntax. Please verify the token and ensure it adheres to the Nenyr language rules.", unknown_token),
+            NenyrErrorKind::SyntaxError,
+            self.trace_lexer_position(),
         )
     }
 
@@ -117,15 +174,34 @@ impl<'a> Lexer<'a> {
     }
 
     /// Advances the lexer to the next token in the input. This function processes
-    /// whitespace, comments, and symbols, returning the appropriate `NenyrTokens`
-    /// for each type of token. When the end of the input is reached, an
-    /// `EndOfLine` token is returned.
+    /// whitespace, comments, delimiters, symbols, and string literals, returning
+    /// the appropriate `NenyrTokens` for each type of token. If an unknown token
+    /// is encountered, the function returns a `NenyrError`.
+    ///
+    /// The function also handles line comments (`//`) and block comments (`/* */`).
+    /// For unknown tokens, the lexer raises an error containing information about
+    /// the token's location, allowing for more precise debugging.
+    ///
+    /// # Parameters
+    ///
+    /// - `context_name`: An optional `String` representing the name of the context
+    ///    in which this lexer is operating (useful for error reporting).
+    /// - `context_path`: A `String` representing the current path or file being lexed.
     ///
     /// # Returns
     ///
-    /// A `NenyrTokens` enum representing the next token in the input stream. This could
-    /// be a keyword, identifier, symbol, string literal, number, or other valid token.
-    pub fn next_token(&mut self) -> NenyrTokens {
+    /// - `Ok(NenyrTokens)`: A `NenyrTokens` enum representing the next valid token in the input stream.
+    /// - `Err(NenyrError)`: An error if an unknown or invalid token is encountered.
+    ///
+    /// This could be a keyword, identifier, symbol, string literal, number, or any
+    /// other valid token. When the end of the input is reached, an `EndOfLine` token
+    /// is returned.
+    ///
+    /// # Errors
+    ///
+    /// - Returns `Err(NenyrError)` if an unknown token is encountered, containing
+    ///   details such as the line, column, and the problematic character.
+    pub fn next_token(&mut self) -> NenyrResult<NenyrTokens> {
         while let Some(char) = self.current_char() {
             match char {
                 // Skip whitespace and update position and column
@@ -179,7 +255,7 @@ impl<'a> Lexer<'a> {
                         continue;
                     }
 
-                    return NenyrTokens::Unknown('/');
+                    return Err(self.raise_unknown_token_error('/'));
                 }
                 // Handle delimiters and symbols
                 '(' | ')' | '{' | '}' | '[' | ']' | ',' | ':' => {
@@ -187,14 +263,14 @@ impl<'a> Lexer<'a> {
                     self.column += char.len_utf8();
 
                     match char {
-                        '(' => return NenyrTokens::ParenthesisOpen,
-                        ')' => return NenyrTokens::ParenthesisClose,
-                        '{' => return NenyrTokens::CurlyBracketOpen,
-                        '}' => return NenyrTokens::CurlyBracketClose,
-                        '[' => return NenyrTokens::SquareBracketOpen,
-                        ']' => return NenyrTokens::SquareBracketClose,
-                        ',' => return NenyrTokens::Comma,
-                        ':' => return NenyrTokens::Colon,
+                        '(' => return Ok(NenyrTokens::ParenthesisOpen),
+                        ')' => return Ok(NenyrTokens::ParenthesisClose),
+                        '{' => return Ok(NenyrTokens::CurlyBracketOpen),
+                        '}' => return Ok(NenyrTokens::CurlyBracketClose),
+                        '[' => return Ok(NenyrTokens::SquareBracketOpen),
+                        ']' => return Ok(NenyrTokens::SquareBracketClose),
+                        ',' => return Ok(NenyrTokens::Comma),
+                        ':' => return Ok(NenyrTokens::Colon),
                         _ => {
                             // TODO: Replace this with a NenyrError
                             unreachable!()
@@ -206,28 +282,28 @@ impl<'a> Lexer<'a> {
                     self.position += char.len_utf8();
                     self.column += char.len_utf8();
 
-                    return self.parse_string_literal(char);
+                    return Ok(self.parse_string_literal(char));
                 }
                 // Handle identifiers
                 'a'..='z' | 'A'..='Z' => {
-                    return self.parse_identifier();
+                    return Ok(self.parse_identifier());
                 }
                 // Handle numbers
                 '0'..='9' => {
-                    return self.parse_number();
+                    return Ok(self.parse_number());
                 }
                 // Handle unknown characters
                 _ => {
                     self.position += char.len_utf8();
                     self.column += char.len_utf8();
 
-                    return NenyrTokens::Unknown(char);
+                    return Err(self.raise_unknown_token_error(char));
                 }
             }
         }
 
         // Return EndOfFile token when the input is exhausted
-        NenyrTokens::EndOfLine
+        Ok(NenyrTokens::EndOfLine)
     }
 
     /// Skips over a line comment in the raw input.
@@ -723,87 +799,240 @@ mod tests {
     #[test]
     fn test_empty_input() {
         let input = "";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), NenyrTokens::EndOfLine);
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
     #[test]
     fn test_single_token() {
         let input = "(";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), NenyrTokens::ParenthesisOpen);
-        assert_eq!(lexer.next_token(), NenyrTokens::EndOfLine);
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisOpen));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
     #[test]
     fn test_multiple_tokens() {
         let input = "( ) { }";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), NenyrTokens::ParenthesisOpen);
-        assert_eq!(lexer.next_token(), NenyrTokens::ParenthesisClose);
-        assert_eq!(lexer.next_token(), NenyrTokens::CurlyBracketOpen);
-        assert_eq!(lexer.next_token(), NenyrTokens::CurlyBracketClose);
-        assert_eq!(lexer.next_token(), NenyrTokens::EndOfLine);
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisOpen));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisClose));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::CurlyBracketOpen));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::CurlyBracketClose));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
     #[test]
     fn test_whitespace_handling() {
         let input = "   ( )   ";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), NenyrTokens::ParenthesisOpen);
-        assert_eq!(lexer.next_token(), NenyrTokens::ParenthesisClose);
-        assert_eq!(lexer.next_token(), NenyrTokens::EndOfLine);
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisOpen));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisClose));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
     #[test]
     fn test_string_literal() {
         let input = "\"hello\"";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
         assert_eq!(
             lexer.next_token(),
-            NenyrTokens::StringLiteral("hello".to_string())
+            Ok(NenyrTokens::StringLiteral("hello".to_string()))
         );
-        assert_eq!(lexer.next_token(), NenyrTokens::EndOfLine);
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
     #[test]
     fn test_comments() {
         let input = "// this is a comment\n( )";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), NenyrTokens::ParenthesisOpen);
-        assert_eq!(lexer.next_token(), NenyrTokens::ParenthesisClose);
-        assert_eq!(lexer.next_token(), NenyrTokens::EndOfLine);
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisOpen));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisClose));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
     #[test]
     fn test_identifier() {
         let input = "Construct";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), NenyrTokens::Construct);
-        assert_eq!(lexer.next_token(), NenyrTokens::EndOfLine);
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::Construct));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
     #[test]
     fn test_number() {
         let input = "123";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), NenyrTokens::Number(123));
-        assert_eq!(lexer.next_token(), NenyrTokens::EndOfLine);
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::Number(123)));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
     #[test]
     fn test_unknown_token() {
         let input = "@";
-        let mut lexer = Lexer::new(input);
+        let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), NenyrTokens::Unknown('@'));
+        assert_eq!(
+            lexer.next_token(),
+            Err(NenyrError {
+                suggestion: Some("To resolve the error, please remove the unsupported token `@` from your Nenyr code and revalidate. Ensure all tokens comply with Nenyr syntax to avoid future issues.".to_string()),
+                context_name: None,
+                context_path: "".to_string(),
+                error_message: "The current token `@` is not supported within Nenyr syntax. Please verify the token and ensure it adheres to the Nenyr language rules.".to_string(),
+                error_kind: NenyrErrorKind::SyntaxError,
+                error_tracing: NenyrErrorTracing {
+                    line_before: None,
+                    line_after: None,
+                    error_line: Some("@".to_string()),
+                    error_on_line: 1,
+                    error_on_col: 2,
+                    error_on_pos: 1
+                }
+            })
+        );
+    }
+
+    #[test]
+    fn test_unknown_token_before_success() {
+        let input = "@ Declare Aliases({}),\nDeclare";
+        let mut lexer = Lexer::new(input, "");
+
+        assert_eq!(
+            lexer.next_token(),
+            Err(NenyrError {
+                suggestion: Some("To resolve the error, please remove the unsupported token `@` from your Nenyr code and revalidate. Ensure all tokens comply with Nenyr syntax to avoid future issues.".to_string()),
+                context_name: None,
+                context_path: "".to_string(),
+                error_message: "The current token `@` is not supported within Nenyr syntax. Please verify the token and ensure it adheres to the Nenyr language rules.".to_string(),
+                error_kind: NenyrErrorKind::SyntaxError,
+                error_tracing: NenyrErrorTracing {
+                    line_before: None,
+                    line_after: Some("Declare".to_string()),
+                    error_line: Some("@ Declare Aliases({}),".to_string()),
+                    error_on_line: 1,
+                    error_on_col: 2,
+                    error_on_pos: 1
+                }
+            })
+        );
+
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::Declare));
+    }
+
+    #[test]
+    fn test_unknown_token_after_success() {
+        let input = "Declare\n@ Declare Aliases({})";
+        let mut lexer = Lexer::new(input, "");
+
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::Declare));
+
+        assert_eq!(
+            lexer.next_token(),
+            Err(NenyrError {
+                suggestion: Some("To resolve the error, please remove the unsupported token `@` from your Nenyr code and revalidate. Ensure all tokens comply with Nenyr syntax to avoid future issues.".to_string()),
+                context_name: None,
+                context_path: "".to_string(),
+                error_message: "The current token `@` is not supported within Nenyr syntax. Please verify the token and ensure it adheres to the Nenyr language rules.".to_string(),
+                error_kind: NenyrErrorKind::SyntaxError,
+                error_tracing: NenyrErrorTracing {
+                    line_before: Some("Declare".to_string()),
+                    line_after: None,
+                    error_line: Some("@ Declare Aliases({})".to_string()),
+                    error_on_line: 2,
+                    error_on_col: 2,
+                    error_on_pos: 9
+                }
+            })
+        );
+    }
+
+    #[test]
+    fn test_unknown_token_between_success() {
+        let input = "Declare\n@\nDeclare Aliases({})";
+        let mut lexer = Lexer::new(input, "");
+
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::Declare));
+
+        assert_eq!(
+            lexer.next_token(),
+            Err(NenyrError {
+                suggestion: Some("To resolve the error, please remove the unsupported token `@` from your Nenyr code and revalidate. Ensure all tokens comply with Nenyr syntax to avoid future issues.".to_string()),
+                context_name: None,
+                context_path: "".to_string(),
+                error_message: "The current token `@` is not supported within Nenyr syntax. Please verify the token and ensure it adheres to the Nenyr language rules.".to_string(),
+                error_kind: NenyrErrorKind::SyntaxError,
+                error_tracing: NenyrErrorTracing {
+                    line_before: Some("Declare".to_string()),
+                    line_after: Some("Declare Aliases({})".to_string()),
+                    error_line: Some("@".to_string()),
+                    error_on_line: 2,
+                    error_on_col: 2,
+                    error_on_pos: 9
+                }
+            })
+        );
+
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::Declare));
+    }
+
+    #[test]
+    fn performance_test_large_valid_nenyr_vector() {
+        let large_nenyr_vector: Vec<_> = (0..1_000_000).map(|_| "Construct").collect();
+
+        for input in large_nenyr_vector {
+            let mut lexer = Lexer::new(input, "");
+
+            assert_eq!(lexer.next_token(), Ok(NenyrTokens::Construct));
+        }
+    }
+
+    #[test]
+    fn performance_test_large_not_valid_nenyr_vector() {
+        let large_nenyr_vector: Vec<_> = (0..1_000_000).map(|_| "aConstruct").collect();
+
+        for input in large_nenyr_vector {
+            let mut lexer = Lexer::new(input, "");
+
+            assert_eq!(
+                lexer.next_token(),
+                Ok(NenyrTokens::Identifier("aConstruct".to_string()))
+            );
+        }
+    }
+
+    #[test]
+    fn performance_test_large_error_nenyr_vector() {
+        let large_nenyr_vector: Vec<_> = (0..1_000_000).map(|_| "@Construct").collect();
+
+        for input in large_nenyr_vector {
+            let mut lexer = Lexer::new(input, "");
+
+            assert_eq!(
+                lexer.next_token(),
+                Err(NenyrError {
+                    suggestion: Some("To resolve the error, please remove the unsupported token `@` from your Nenyr code and revalidate. Ensure all tokens comply with Nenyr syntax to avoid future issues.".to_string()),
+                    context_name: None,
+                    context_path: "".to_string(),
+                    error_message: "The current token `@` is not supported within Nenyr syntax. Please verify the token and ensure it adheres to the Nenyr language rules.".to_string(),
+                    error_kind: NenyrErrorKind::SyntaxError,
+                    error_tracing: NenyrErrorTracing {
+                        line_before: None,
+                        line_after: None,
+                        error_line: Some("@Construct".to_string()),
+                        error_on_line: 1,
+                        error_on_col: 2,
+                        error_on_pos: 1
+                    }
+                })
+            );
+        }
     }
 }
