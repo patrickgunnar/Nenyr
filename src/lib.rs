@@ -1,5 +1,6 @@
 use error::{NenyrError, NenyrErrorKind};
 use lexer::Lexer;
+use store::NenyrProcessStore;
 use tokens::NenyrTokens;
 use types::ast::NenyrAst;
 
@@ -23,6 +24,7 @@ mod interfaces {
     pub mod aliases;
     pub mod animations;
     pub mod breakpoints;
+    pub mod central;
     pub mod class;
     pub mod delimiters;
     pub mod handlers;
@@ -62,6 +64,7 @@ mod validators {
 
 mod error;
 mod lexer;
+mod store;
 mod tokens;
 
 pub type NenyrResult<T> = Result<T, NenyrError>;
@@ -69,7 +72,9 @@ pub type NenyrResult<T> = Result<T, NenyrError>;
 pub struct NenyrParser<'a> {
     lexer: Lexer<'a>,
     context_path: &'a str,
+    context_name: Option<String>,
     current_token: NenyrTokens,
+    processing_state: NenyrProcessStore,
 }
 
 impl<'a> NenyrParser<'a> {
@@ -79,7 +84,9 @@ impl<'a> NenyrParser<'a> {
         Self {
             lexer,
             context_path,
+            context_name: None,
             current_token: NenyrTokens::StartOfFile,
+            processing_state: NenyrProcessStore::new(),
         }
     }
 
@@ -95,7 +102,11 @@ impl<'a> NenyrParser<'a> {
 
     fn parse_current_context(&mut self) -> NenyrResult<NenyrAst> {
         match self.current_token {
-            NenyrTokens::Central => {}
+            NenyrTokens::Central => {
+                let central_context = self.process_central_context()?;
+
+                println!("{:?}", central_context);
+            }
             NenyrTokens::Layout => {}
             NenyrTokens::Module => {}
             _ => {

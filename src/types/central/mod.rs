@@ -32,3 +32,18 @@ impl NenyrThemesCreator for CentralContext {}
 impl NenyrImportsCreator for CentralContext {}
 impl NenyrTypefacesCreator for CentralContext {}
 impl NenyrBreakpointsCreator for CentralContext {}
+
+impl CentralContext {
+    pub fn new() -> Self {
+        Self {
+            imports: None,
+            typefaces: None,
+            breakpoints: None,
+            aliases: None,
+            variables: None,
+            themes: None,
+            animations: None,
+            classes: None,
+        }
+    }
+}
