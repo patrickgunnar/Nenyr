@@ -30,3 +30,16 @@ impl NenyrVariablesCreator for LayoutContext {}
 impl NenyrAnimationCreator for LayoutContext {}
 impl NenyrClassCreator for LayoutContext {}
 impl NenyrThemesCreator for LayoutContext {}
+
+impl LayoutContext {
+    pub fn new(layout_name: String) -> Self {
+        Self {
+            layout_name,
+            aliases: None,
+            variables: None,
+            themes: None,
+            animations: None,
+            classes: None,
+        }
+    }
+}

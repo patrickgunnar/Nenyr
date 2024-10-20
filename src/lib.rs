@@ -3,6 +3,7 @@ use lexer::Lexer;
 use store::NenyrProcessStore;
 use tokens::NenyrTokens;
 use types::ast::NenyrAst;
+use validators::identifier::NenyrIdentifierValidator;
 
 mod converters {
     pub mod property;
@@ -30,7 +31,9 @@ mod interfaces {
     pub mod handlers;
     pub mod imports;
     pub mod keywords;
+    pub mod layout;
     pub mod literals;
+    pub mod module;
     pub mod patterns;
     pub mod themes;
     pub mod typefaces;
@@ -64,6 +67,7 @@ mod validators {
 
 mod error;
 mod lexer;
+mod macros;
 mod store;
 mod tokens;
 
@@ -76,6 +80,8 @@ pub struct NenyrParser<'a> {
     current_token: NenyrTokens,
     processing_state: NenyrProcessStore,
 }
+
+impl<'a> NenyrIdentifierValidator for NenyrParser<'a> {}
 
 impl<'a> NenyrParser<'a> {
     pub fn new(raw_nenyr: &'a str, context_path: &'a str) -> Self {
@@ -95,7 +101,7 @@ impl<'a> NenyrParser<'a> {
 
         self.parse_construct_keyword(
             Some("Ensure that every Nenyr context starts with the `Construct` keyword at the root level to properly define the scope and structure of your context.".to_string()),
-            "Expected the Nenyr context to begin with the `Construct` keyword at the root.".to_string(),
+            "Expected the Nenyr context to begin with the `Construct` keyword at the root.",
             Self::parse_current_context,
         )
     }
@@ -107,8 +113,16 @@ impl<'a> NenyrParser<'a> {
 
                 println!("{:?}", central_context);
             }
-            NenyrTokens::Layout => {}
-            NenyrTokens::Module => {}
+            NenyrTokens::Layout => {
+                let layout_context = self.process_layout_context()?;
+
+                println!("\n\n{:?}", layout_context);
+            }
+            NenyrTokens::Module => {
+                let module_context = self.process_module_context()?;
+
+                println!("\n\n{:?}", module_context);
+            }
             _ => {
                 return Err(NenyrError::new(
                     Some("To define a Nenyr Context, please use one of the following keywords: `Central`, `Layout`, or `Module`.".to_string()),

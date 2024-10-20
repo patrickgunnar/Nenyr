@@ -29,3 +29,16 @@ impl NenyrAliasesCreator for ModuleContext {}
 impl NenyrVariablesCreator for ModuleContext {}
 impl NenyrAnimationCreator for ModuleContext {}
 impl NenyrClassCreator for ModuleContext {}
+
+impl ModuleContext {
+    pub fn new(module_name: String, extending_from: Option<String>) -> Self {
+        Self {
+            module_name,
+            extending_from,
+            aliases: None,
+            variables: None,
+            animations: None,
+            classes: None,
+        }
+    }
+}
