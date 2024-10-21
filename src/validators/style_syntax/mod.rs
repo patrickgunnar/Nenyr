@@ -5,9 +5,9 @@ use regex::Regex;
 /// This trait provides a method to check if a given style rule
 /// adheres to the defined syntax standards. Currently, it only
 /// validates that the rule does not contain any invalid characters.
-/// The invalid characters defined include curly braces (`{}`,
-/// special symbols such as `@`, `$`, `!`, and the delimiters
-/// `;` and `:`. This validation helps ensure that style rules
+/// The invalid characters defined include curly braces ( special 
+/// symbols such as `@`, `!`, and the delimiters `;` and `:`.
+/// This validation helps ensure that style rules
 /// are formatted correctly before being processed further.
 ///
 /// In future iterations of the implementation, more complex
@@ -36,7 +36,7 @@ pub trait NenyrStyleSyntaxValidator {
     /// - `false` if the syntax is invalid (i.e., contains one or
     ///   more of the invalid characters defined).
     fn is_valid_style_syntax(&self, rule: &str) -> bool {
-        let invalid_chars = Regex::new(r"[{}@$!;:]").unwrap();
+        let invalid_chars = Regex::new(r"[@!;:]").unwrap();
 
         !invalid_chars.is_match(rule)
     }
@@ -104,9 +104,9 @@ mod tests {
             "calc(20px : 20px)",
             "blue;",
             "@000000",
-            "$FFFFFF",
+            "$;FFFFFF",
             "20!px",
-            "{1px} solid blue",
+            "{1px@ solid blue",
             "85:%",
             "50;",
             "70:vw",

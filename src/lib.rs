@@ -1,9 +1,10 @@
+use converters::{property::NenyrPropertyConverter, style_pattern::NenyrStylePatternConverter};
 use error::{NenyrError, NenyrErrorKind};
 use lexer::Lexer;
 use store::NenyrProcessStore;
 use tokens::NenyrTokens;
 use types::ast::NenyrAst;
-use validators::identifier::NenyrIdentifierValidator;
+use validators::{identifier::NenyrIdentifierValidator, style_syntax::NenyrStyleSyntaxValidator};
 
 mod converters {
     pub mod property;
@@ -82,6 +83,9 @@ pub struct NenyrParser<'a> {
 }
 
 impl<'a> NenyrIdentifierValidator for NenyrParser<'a> {}
+impl<'a> NenyrStyleSyntaxValidator for NenyrParser<'a> {}
+impl<'a> NenyrPropertyConverter for NenyrParser<'a> {}
+impl<'a> NenyrStylePatternConverter for NenyrParser<'a> {}
 
 impl<'a> NenyrParser<'a> {
     pub fn new(raw_nenyr: &'a str, context_path: &'a str) -> Self {
@@ -111,7 +115,7 @@ impl<'a> NenyrParser<'a> {
             NenyrTokens::Central => {
                 let central_context = self.process_central_context()?;
 
-                println!("{:?}", central_context);
+                println!("{:#?}", central_context);
             }
             NenyrTokens::Layout => {
                 let layout_context = self.process_layout_context()?;

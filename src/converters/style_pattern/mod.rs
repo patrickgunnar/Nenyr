@@ -45,7 +45,7 @@ pub trait NenyrStylePatternConverter {
     /// - `Option<String>`: The CSS pseudo-selector as a `String` if the token is recognized, or `None` if the token is unsupported.
     fn convert_nenyr_style_pattern_to_pseudo_selector(
         &self,
-        nenyr_token: NenyrTokens,
+        nenyr_token: &NenyrTokens,
     ) -> Option<String> {
         match nenyr_token {
             NenyrTokens::Stylesheet => Some("_stylesheet".to_string()),
@@ -106,128 +106,128 @@ mod tests {
 
         assert_eq!(
             Some("_stylesheet".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Stylesheet)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Stylesheet)
         );
         assert_eq!(
             Some("::first-line".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FirstLine)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FirstLine)
         );
         assert_eq!(
             Some("::first-letter".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FirstLetter)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FirstLetter)
         );
         assert_eq!(
             Some("::before".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Before)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Before)
         );
         assert_eq!(
             Some("::after".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::After)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::After)
         );
         assert_eq!(
             Some(":hover".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Hover)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Hover)
         );
         assert_eq!(
             Some(":active".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Active)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Active)
         );
         assert_eq!(
             Some(":focus".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Focus)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Focus)
         );
         assert_eq!(
             Some(":first-child".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FirstChild)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FirstChild)
         );
         assert_eq!(
             Some(":last-child".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::LastChild)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::LastChild)
         );
         assert_eq!(
             Some(":first-of-type".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FirstOfType)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FirstOfType)
         );
         assert_eq!(
             Some(":last-of-type".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::LastOfType)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::LastOfType)
         );
         assert_eq!(
             Some(":only-child".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::OnlyChild)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::OnlyChild)
         );
         assert_eq!(
             Some(":only-of-type".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::OnlyOfType)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::OnlyOfType)
         );
         assert_eq!(
             Some(":target".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Target)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Target)
         );
         assert_eq!(
             Some(":visited".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Visited)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Visited)
         );
         assert_eq!(
             Some(":checked".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Checked)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Checked)
         );
         assert_eq!(
             Some(":disabled".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Disabled)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Disabled)
         );
         assert_eq!(
             Some(":enabled".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Enabled)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Enabled)
         );
         assert_eq!(
             Some(":read-only".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::ReadOnly)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::ReadOnly)
         );
         assert_eq!(
             Some(":read-write".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::ReadWrite)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::ReadWrite)
         );
         assert_eq!(
             Some(":placeholder-shown".to_string()),
             nenyr_token
-                .convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::PlaceholderShown)
+                .convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::PlaceholderShown)
         );
         assert_eq!(
             Some(":valid".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Valid)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Valid)
         );
         assert_eq!(
             Some(":invalid".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Invalid)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Invalid)
         );
         assert_eq!(
             Some(":required".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Required)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Required)
         );
         assert_eq!(
             Some(":optional".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Optional)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Optional)
         );
         assert_eq!(
             Some(":fullscreen".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Fullscreen)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Fullscreen)
         );
         assert_eq!(
             Some(":focus-within".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FocusWithin)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FocusWithin)
         );
         assert_eq!(
             Some(":out-of-range".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::OutOfRange)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::OutOfRange)
         );
         assert_eq!(
             Some(":root".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Root)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Root)
         );
         assert_eq!(
             Some(":empty".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Empty)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Empty)
         );
     }
 
@@ -237,128 +237,128 @@ mod tests {
 
         assert_ne!(
             Some("Stylesheet".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Stylesheet)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Stylesheet)
         );
         assert_ne!(
             Some("Hover".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Hover)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Hover)
         );
         assert_ne!(
             Some("Active".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Active)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Active)
         );
         assert_ne!(
             Some("Focus".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Focus)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Focus)
         );
         assert_ne!(
             Some("FirstChild".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FirstChild)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FirstChild)
         );
         assert_ne!(
             Some("LastChild".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::LastChild)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::LastChild)
         );
         assert_ne!(
             Some("FirstOfType".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FirstOfType)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FirstOfType)
         );
         assert_ne!(
             Some("LastOfType".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::LastOfType)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::LastOfType)
         );
         assert_ne!(
             Some("OnlyChild".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::OnlyChild)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::OnlyChild)
         );
         assert_ne!(
             Some("OnlyOfType".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::OnlyOfType)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::OnlyOfType)
         );
         assert_ne!(
             Some("Target".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Target)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Target)
         );
         assert_ne!(
             Some("Visited".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Visited)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Visited)
         );
         assert_ne!(
             Some("Checked".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Checked)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Checked)
         );
         assert_ne!(
             Some("Disabled".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Disabled)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Disabled)
         );
         assert_ne!(
             Some("Enabled".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Enabled)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Enabled)
         );
         assert_ne!(
             Some("ReadOnly".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::ReadOnly)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::ReadOnly)
         );
         assert_ne!(
             Some("ReadWrite".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::ReadWrite)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::ReadWrite)
         );
         assert_ne!(
             Some("PlaceholderShown".to_string()),
             nenyr_token
-                .convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::PlaceholderShown)
+                .convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::PlaceholderShown)
         );
         assert_ne!(
             Some("Valid".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Valid)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Valid)
         );
         assert_ne!(
             Some("Invalid".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Invalid)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Invalid)
         );
         assert_ne!(
             Some("Required".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Required)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Required)
         );
         assert_ne!(
             Some("Optional".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Optional)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Optional)
         );
         assert_ne!(
             Some("Fullscreen".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Fullscreen)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Fullscreen)
         );
         assert_ne!(
             Some("FocusWithin".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FocusWithin)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FocusWithin)
         );
         assert_ne!(
             Some("FirstLine".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FirstLine)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FirstLine)
         );
         assert_ne!(
             Some("FirstLetter".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::FirstLetter)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::FirstLetter)
         );
         assert_ne!(
             Some("Before".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Before)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Before)
         );
         assert_ne!(
             Some("After".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::After)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::After)
         );
         assert_ne!(
             Some("OutOfRange".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::OutOfRange)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::OutOfRange)
         );
         assert_ne!(
             Some("Root".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Root)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Root)
         );
         assert_ne!(
             Some("Empty".to_string()),
-            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(NenyrTokens::Empty)
+            nenyr_token.convert_nenyr_style_pattern_to_pseudo_selector(&NenyrTokens::Empty)
         );
     }
 }

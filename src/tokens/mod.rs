@@ -57,6 +57,7 @@ pub enum NenyrTokens {
     False,
 
     // Style Patterns
+    Important,
     Stylesheet,
     Hover,
     Active,

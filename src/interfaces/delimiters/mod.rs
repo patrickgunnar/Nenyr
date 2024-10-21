@@ -74,10 +74,10 @@ impl<'a> NenyrParser<'a> {
         error_message_on_open: &str,
         suggestion_on_close: Option<String>,
         error_message_on_close: &str,
-        parse_fn: F,
+        mut parse_fn: F,
     ) -> NenyrResult<T>
     where
-        F: Fn(&mut Self) -> NenyrResult<T>,
+        F: FnMut(&mut Self) -> NenyrResult<T>,
     {
         // Checks if the current token is an opening curly bracket
         if let NenyrTokens::CurlyBracketOpen = self.current_token {
@@ -149,10 +149,10 @@ impl<'a> NenyrParser<'a> {
         error_message_on_open: &str,
         suggestion_on_close: Option<String>,
         error_message_on_close: &str,
-        parse_fn: F,
+        mut parse_fn: F,
     ) -> NenyrResult<T>
     where
-        F: Fn(&mut Self) -> NenyrResult<T>,
+        F: FnMut(&mut Self) -> NenyrResult<T>,
     {
         // Checks if the current token is an opening parenthesis
         if let NenyrTokens::ParenthesisOpen = self.current_token {
@@ -187,6 +187,126 @@ impl<'a> NenyrParser<'a> {
             NenyrErrorKind::SyntaxError,
             self.get_tracing(),
         ))
+    }
+
+    /// Parses a colon (`:`) delimiter from the current token and optionally
+    /// moves to the next token if `with_next_move` is true.
+    ///
+    /// # Parameters
+    /// - `suggestion`: An optional string containing suggestions for fixing syntax errors if
+    ///   the parsing fails. This will be included in the error if the colon is missing.
+    /// - `error_message`: A string describing the error that will be included in the error
+    ///   if the expected colon delimiter is not found.
+    /// - `with_next_move`: A boolean flag that, if set to `true`, advances the parser to the next
+    ///   token after successfully parsing the colon.
+    ///
+    /// # Returns
+    /// - `Ok(())` if the colon is successfully parsed.
+    /// - `Err(NenyrError)` if the colon is missing or invalid.
+    ///
+    /// # Errors
+    /// An error of type `SyntaxError` is returned if the current token is not a colon (`:`).
+    /// This error includes the provided `error_message` and any optional `suggestion`.
+    pub(crate) fn parse_colon_delimiter(
+        &mut self,
+        suggestion: Option<String>,
+        error_message: &str,
+        with_next_move: bool,
+    ) -> NenyrResult<()> {
+        // Checks if the current token is a colon.
+        if let NenyrTokens::Colon = self.current_token {
+            if with_next_move {
+                self.process_next_token()?;
+            }
+
+            return Ok(());
+        }
+
+        // Returns an error if the colon is missing
+        Err(NenyrError::new(
+            suggestion,
+            self.context_name.clone(),
+            self.context_path.to_string(),
+            self.add_nenyr_token_to_error(error_message),
+            NenyrErrorKind::SyntaxError,
+            self.get_tracing(),
+        ))
+    }
+
+    /// Parses a nested expression with both parenthesized and curly-bracketed delimiters,
+    /// ensuring that both delimiters are properly matched and valid.
+    ///
+    /// This function parses an expression that is first enclosed within parentheses (`(...)`),
+    /// and then inside those parentheses, another expression enclosed within curly brackets
+    /// (`{...}`). The provided function `parse_fn` is used to handle the actual parsing of the
+    /// content inside the delimiters.
+    ///
+    /// # Parameters
+    /// - `suggestion_on_parenthesis_open`: An optional suggestion string provided if the
+    ///   opening parenthesis is missing. This helps guide error handling.
+    /// - `error_message_on_parenthesis_open`: The error message displayed if the opening
+    ///   parenthesis is not found.
+    /// - `suggestion_on_parenthesis_close`: An optional suggestion string provided if the
+    ///   closing parenthesis is missing. This helps guide error handling.
+    /// - `error_message_on_parenthesis_close`: The error message displayed if the closing
+    ///   parenthesis is not found.
+    /// - `suggestion_on_bracket_open`: An optional suggestion string provided if the opening
+    ///   curly bracket is missing.
+    /// - `error_message_on_bracket_open`: The error message displayed if the opening curly
+    ///   bracket is not found.
+    /// - `suggestion_on_bracket_close`: An optional suggestion string provided if the closing
+    ///   curly bracket is missing.
+    /// - `error_message_on_bracket_close`: The error message displayed if the closing curly
+    ///   bracket is not found.
+    /// - `parse_fn`: A closure or function pointer used to parse the contents inside the curly
+    ///   brackets once both parentheses and brackets are validated.
+    ///
+    /// # Returns
+    /// - `Ok(T)` where `T` is the result of the provided `parse_fn` if the delimiters are
+    ///   successfully parsed.
+    /// - `Err(NenyrError)` if any of the delimiters are missing or invalid.
+    ///
+    /// # Errors
+    /// - An error is returned if either the opening or closing parentheses or curly brackets
+    ///   are missing or invalid. The corresponding error message will be passed along with the
+    ///   optional suggestions provided.
+    pub(crate) fn parse_parenthesized_curly_bracketed_delimiter<F, T>(
+        &mut self,
+        suggestion_on_parenthesis_open: Option<String>,
+        error_message_on_parenthesis_open: &str,
+        suggestion_on_parenthesis_close: Option<String>,
+        error_message_on_parenthesis_close: &str,
+        suggestion_on_bracket_open: Option<String>,
+        error_message_on_bracket_open: &str,
+        suggestion_on_bracket_close: Option<String>,
+        error_message_on_bracket_close: &str,
+        parse_fn: &F,
+    ) -> NenyrResult<T>
+    where
+        F: Fn(&mut Self) -> NenyrResult<T>,
+    {
+        // First, parse the expression within the parentheses.
+        self.parse_parenthesized_delimiter(
+            suggestion_on_parenthesis_open,
+            error_message_on_parenthesis_open,
+            suggestion_on_parenthesis_close,
+            error_message_on_parenthesis_close,
+            |parser| {
+                // Once inside the parentheses, parse the expression within the curly brackets.
+                let parsed_value = parser.parse_curly_bracketed_delimiter(
+                    suggestion_on_bracket_open.clone(),
+                    error_message_on_bracket_open,
+                    suggestion_on_bracket_close.clone(),
+                    error_message_on_bracket_close,
+                    parse_fn,
+                )?;
+
+                // Processes the next token
+                parser.process_next_token()?;
+
+                Ok(parsed_value)
+            },
+        )
     }
 }
 
@@ -262,6 +382,220 @@ mod tests {
         let _ = parser.process_next_token();
         assert_ne!(
             parser.parse_parenthesized_delimiter(None, "", None, "", |_| Ok(())),
+            Ok(())
+        );
+    }
+
+    #[test]
+    fn colon_is_valid() {
+        let raw_nenyr = ":";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_eq!(parser.parse_colon_delimiter(None, "", false), Ok(()));
+    }
+
+    #[test]
+    fn colon_is_not_valid() {
+        let raw_nenyr = ";";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(parser.parse_colon_delimiter(None, "", false), Ok(()));
+    }
+
+    #[test]
+    fn parenthesized_bracketed_section_is_valid() {
+        let raw_nenyr = "({ })";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_eq!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+    }
+
+    #[test]
+    fn parenthesized_bracketed_section_is_not_valid() {
+        let raw_nenyr = "({ )";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+
+        let raw_nenyr = "( })";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+
+        let raw_nenyr = "( )";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+
+        let raw_nenyr = "({ }";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+
+        let raw_nenyr = "{ })";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+
+        let raw_nenyr = "{ }";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+
+        let raw_nenyr = "({ ";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+
+        let raw_nenyr = " })";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
+            Ok(())
+        );
+
+        let raw_nenyr = " ";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_parenthesized_curly_bracketed_delimiter(
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                None,
+                "",
+                &|_| Ok(())
+            ),
             Ok(())
         );
     }

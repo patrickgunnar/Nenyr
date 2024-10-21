@@ -498,6 +498,7 @@ impl<'a> Lexer<'a> {
             "false" => NenyrTokens::False,
 
             // Nenyr style patterns
+            "Important" => NenyrTokens::Important,
             "Stylesheet" => NenyrTokens::Stylesheet,
             "PanoramicViewer" => NenyrTokens::PanoramicViewer,
             "Hover" => NenyrTokens::Hover,
