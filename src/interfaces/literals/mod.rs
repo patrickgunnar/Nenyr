@@ -128,6 +128,61 @@ impl<'a> NenyrParser<'a> {
             self.get_tracing(),
         ))
     }
+
+    /// Parses an identifier literal from the current token.
+    ///
+    /// This method checks whether the current token is an identifier and returns it as a `String` if valid.
+    /// If the token is valid and the `with_next_move` flag is set to true, the parser will advance to the next token
+    /// after processing the current one.
+    ///
+    /// # Parameters
+    ///
+    /// - `suggestion`: An optional string providing suggestions for valid identifiers if parsing fails.
+    /// - `error_message`: A message describing the error if the identifier literal is missing or invalid.
+    /// - `with_next_move`: A boolean flag indicating whether to advance the parser to the next token after successful parsing.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `NenyrResult<String>` which is:
+    /// - `Ok(val)`: The parsed identifier literal as a `String` if successful.
+    /// - `Err(NenyrError)`: A `NenyrError` indicating the parsing failure, including context details such as
+    ///   the current context name, context path, and the provided error message.
+    ///
+    /// # Errors
+    ///
+    /// This method will return an error if:
+    /// - The current token is not an identifier.
+    /// - The identifier is empty.
+    /// - There are issues related to the parsing context, resulting in a syntax error.
+    pub(crate) fn parse_identifier_literal(
+        &mut self,
+        suggestion: Option<String>,
+        error_message: &str,
+        with_next_move: bool,
+    ) -> NenyrResult<String> {
+        if let NenyrTokens::Identifier(val) = self.current_token.clone() {
+            // Ensure the identifier is not empty
+            if !val.is_empty() {
+                // Move to the next token if requested
+                if with_next_move {
+                    self.process_next_token()?;
+                }
+
+                // Return the valid identifier literal
+                return Ok(val);
+            }
+        }
+
+        // Return an error if the identifier literal is missing or invalid
+        Err(NenyrError::new(
+            suggestion,
+            self.context_name.clone(),
+            self.context_path.to_string(),
+            self.add_nenyr_token_to_error(error_message),
+            NenyrErrorKind::SyntaxError,
+            self.get_tracing(),
+        ))
+    }
 }
 
 #[cfg(test)]
@@ -195,5 +250,41 @@ mod tests {
 
         let _ = parser.process_next_token();
         assert_ne!(parser.parse_boolean_literal(None, "", false), Ok(false));
+    }
+
+    #[test]
+    fn identifier_is_valid() {
+        let raw_nenyr = r#"thisIsAValidIdentifier"#;
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_eq!(
+            parser.parse_identifier_literal(None, "", false),
+            Ok("thisIsAValidIdentifier".to_string())
+        );
+    }
+
+    #[test]
+    fn identifier_is_not_valid() {
+        let raw_nenyr = r#"this_is_an_invalid_identifier"#;
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_identifier_literal(None, "", false),
+            Ok("this_is_an_invalid_identifier".to_string())
+        );
+    }
+
+    #[test]
+    fn empty_identifier_is_not_valid() {
+        let raw_nenyr = r#""#;
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        let _ = parser.process_next_token();
+        assert_ne!(
+            parser.parse_identifier_literal(None, "", false),
+            Ok("".to_string())
+        );
     }
 }

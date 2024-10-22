@@ -35,6 +35,7 @@ mod interfaces {
     pub mod layout;
     pub mod literals;
     pub mod module;
+    pub mod panoramic;
     pub mod patterns;
     pub mod themes;
     pub mod typefaces;
