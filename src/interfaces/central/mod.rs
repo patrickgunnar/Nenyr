@@ -156,3 +156,129 @@ impl<'a> NenyrParser<'a> {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::NenyrParser;
+
+    #[test]
+    fn central_context_is_valid() {
+        let raw_nenyr = "Central {
+    Declare Class('miniatureTrogon') Deriving('discreteAudio') {
+        Important(true),
+        Stylesheet({
+            backgroundColor: '${accentColorVar}',
+            backgroundColor: '#0000FF',
+            background: '#00FF00',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        Hover({
+            background: '${secondaryColor}',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    // Este é um comentário de linha.
+                    display: 'block', // Este é um comentário de linha.
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: '${secondaryColor}', // Este é um comentário de linha.
+                    pdg: '${m15px}'
+                })
+            })
+        })
+    },
+    Declare Class('myTestingClass') {
+        Stylesheet({
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        PanoramicViewer({
+            myBreakpoint({
+                Stylesheet({
+                    backgroundColor: 'blue',
+                    border: '10px solid red',
+                    height: '100px',
+                    width: '200px'
+                })
+            })
+        })
+    },
+}";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let _ = parser.process_next_token();
+
+        assert_eq!(
+            format!("{:?}", parser.process_central_context()),
+            "Ok(CentralContext { imports: None, typefaces: None, breakpoints: None, aliases: None, variables: None, themes: None, animations: None, classes: Some({\"miniatureTrogon\": NenyrStyleClass { class_name: \"miniatureTrogon\", deriving_from: Some(\"discreteAudio\"), is_important: Some(true), style_patterns: Some({\"_stylesheet\": {\"background-color\": \"#0000FF\", \"background\": \"#00FF00\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}, \":hover\": {\"background\": \"${secondaryColor}\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}}), responsive_patterns: Some({\"onMobTablet\": {\"_stylesheet\": {\"display\": \"block\"}}, \"onDeskDesktop\": {\":hover\": {\"bgd\": \"${secondaryColor}\", \"pdg\": \"${m15px}\"}}}) }, \"myTestingClass\": NenyrStyleClass { class_name: \"myTestingClass\", deriving_from: None, is_important: None, style_patterns: Some({\"_stylesheet\": {\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"}}), responsive_patterns: Some({\"myBreakpoint\": {\"_stylesheet\": {\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"}}}) }}) })".to_string()
+        );
+    }
+
+    #[test]
+    fn central_context_is_not_valid() {
+        let raw_nenyr = "Central {
+    Declare Class('miniatureTrogon') Deriving('discreteAudio') {
+        Important(true),
+        Stylesheet({
+            backgroundColor: '${accentColorVar}',
+            backgroundColor: '#0000FF',
+            background: '#00FF00',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        Hover({
+            background: '${secondaryColor}',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    // Este é um comentário de linha.
+                    display: 'block', // Este é um comentário de linha.
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: '${secondaryColor}', // Este é um comentário de linha.
+                    pdg: '${m15px}'
+                })
+            })
+        })
+    },
+    Declare Class('myTestingClass') {
+        Stylesheet({
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        PanoramicViewer(
+            myBreakpoint({
+                Stylesheet({
+                    backgroundColor: 'blue',
+                    border: '10px solid red',
+                    height: '100px',
+                    width: '200px'
+                })
+            })
+        })
+    },
+}";
+
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let _ = parser.process_next_token();
+
+        assert_eq!(
+            format!("{:?}", parser.process_central_context()),
+            "Err(NenyrError { suggestion: Some(\"After the open parenthesis, an opening curly bracket `{` is required to properly define the panoramic block in `myTestingClass` class. Ensure the panoramic pattern follows the correct Nenyr syntax, such as `Class('myTestingClass') { PanoramicViewer({ ... }) }`.\"), context_name: Some(\"Central\"), context_path: \"\", error_message: \"The panoramic pattern in the `myTestingClass` class was expected to receive an object as a value, but an opening curly bracket `{` was not found after the open parenthesis. However, found `myBreakpoint` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"        PanoramicViewer(\"), line_after: Some(\"                Stylesheet({\"), error_line: Some(\"            myBreakpoint({\"), error_on_line: 39, error_on_col: 25, error_on_pos: 1166 } })".to_string()
+        );
+    }
+}
