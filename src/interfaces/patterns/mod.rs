@@ -41,36 +41,40 @@ impl<'a> NenyrParser<'a> {
             self.processing_state.set_block_active(true);
         }
 
-        if let NenyrTokens::Important = self.current_token {
-            let is_important = self.retrieve_important_value(class_name)?;
+        match self.current_token {
+            NenyrTokens::Important => {
+                let is_important = self.retrieve_important_value(class_name)?;
 
-            style_class.set_importance(is_important);
+                style_class.set_importance(is_important);
 
-            return Ok(());
-        } else if let NenyrTokens::PanoramicViewer = self.current_token {
-            if is_panoramic {
-                return Err(NenyrError::new(
-                    Some(format!("Remove the nested `PanoramicViewer` pattern. The `PanoramicViewer` method must be used as a direct child of the class and cannot be nested within other `PanoramicViewer` declarations. Ensure the method is properly placed as a direct child of the class. Example: `Declare Class('{}') {{ PanoramicViewer({{ ... }}) }}`.", class_name)),
-                    self.context_name.clone(),
-                    self.context_path.to_string(),
-                    self.add_nenyr_token_to_error(&format!("The `{}` class contains a nested `PanoramicViewer` declaration, which is forbidden. Nested `PanoramicViewer` patterns are not allowed in Nenyr syntax.", class_name)),
-                    NenyrErrorKind::SyntaxError,
-                    self.get_tracing(),
-                ));
+                return Ok(());
             }
+            NenyrTokens::PanoramicViewer => {
+                if is_panoramic {
+                    return Err(NenyrError::new(
+                        Some(format!("Remove the nested `PanoramicViewer` pattern. The `PanoramicViewer` method must be used as a direct child of the class and cannot be nested within other `PanoramicViewer` declarations. Ensure the method is properly placed as a direct child of the class. Example: `Declare Class('{}') {{ PanoramicViewer({{ ... }}) }}`.", class_name)),
+                        self.context_name.clone(),
+                        self.context_path.to_string(),
+                        self.add_nenyr_token_to_error(&format!("The `{}` class contains a nested `PanoramicViewer` declaration, which is forbidden. Nested `PanoramicViewer` patterns are not allowed in Nenyr syntax.", class_name)),
+                        NenyrErrorKind::SyntaxError,
+                        self.get_tracing(),
+                    ));
+                }
 
-            return self.process_panoramic_pattern(class_name, style_class);
-        } else {
-            if let Some(pattern_name) =
-                self.convert_nenyr_style_pattern_to_pseudo_selector(&self.current_token)
-            {
-                return self.handle_parenthesized_curly_bracketed_section(
-                    &pattern_name,
-                    class_name,
-                    is_panoramic,
-                    style_class,
-                    breakpoint_name,
-                );
+                return self.process_panoramic_pattern(class_name, style_class);
+            }
+            _ => {
+                if let Some(pattern_name) =
+                    self.convert_nenyr_style_pattern_to_pseudo_selector(&self.current_token)
+                {
+                    return self.handle_parenthesized_curly_bracketed_section(
+                        &pattern_name,
+                        class_name,
+                        is_panoramic,
+                        style_class,
+                        breakpoint_name,
+                    );
+                }
             }
         }
 

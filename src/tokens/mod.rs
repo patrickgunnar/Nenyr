@@ -39,7 +39,7 @@ pub enum NenyrTokens {
     // Value collectors
     //Unknown(char),
     StringLiteral(String),
-    Number(i64),
+    Number(f64),
     Identifier(String),
 
     // Syntax tokens

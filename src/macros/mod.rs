@@ -57,7 +57,9 @@ macro_rules! loop_while_not {
         $body:block
     ) => {{
         // Loop through the tokens until a closing curly bracket (`}`) is found.
-        while $self.current_token != NenyrTokens::CurlyBracketClose {
+        while $self.current_token != NenyrTokens::CurlyBracketClose
+            && $self.current_token != NenyrTokens::SquareBracketClose
+        {
             // If the current token is a comma, handle it based on the active state.
             if let NenyrTokens::Comma = $self.current_token {
                 // If the state allows a comma, deactivate the state and process the next token.

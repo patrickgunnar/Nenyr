@@ -135,7 +135,11 @@ impl<'a> NenyrParser<'a> {
             NenyrTokens::Aliases => {}
             NenyrTokens::Variables => {}
             NenyrTokens::Themes => {}
-            NenyrTokens::Animation => {}
+            NenyrTokens::Animation => {
+                let (animation_name, animation) = self.process_animation_method()?;
+
+                central_context.add_animation_to_context(animation_name, animation);
+            }
             NenyrTokens::Class => {
                 let (class_name, style_class) = self.process_class_method()?;
 

@@ -45,4 +45,18 @@ impl CentralContext {
             classes.insert(class_name, style_class);
         }
     }
+
+    pub(crate) fn add_animation_to_context(
+        &mut self,
+        animation_name: String,
+        animation: NenyrAnimation,
+    ) {
+        if self.animations == None {
+            self.animations = Some(IndexMap::new());
+        }
+
+        if let Some(animations) = &mut self.animations {
+            animations.insert(animation_name, animation);
+        }
+    }
 }

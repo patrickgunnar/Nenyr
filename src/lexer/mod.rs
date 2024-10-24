@@ -290,7 +290,7 @@ impl<'a> Lexer<'a> {
                 }
                 // Handle numbers
                 '0'..='9' => {
-                    return Ok(self.parse_number());
+                    return self.parse_number();
                 }
                 // Handle unknown characters
                 _ => {
@@ -389,7 +389,7 @@ impl<'a> Lexer<'a> {
     /// # Panics
     ///
     /// This method will panic if the slice of digits cannot be parsed into a valid number.
-    fn parse_number(&mut self) -> NenyrTokens {
+    fn parse_number(&mut self) -> NenyrResult<NenyrTokens> {
         let start_pos = self.position;
 
         while let Some(char) = self.current_char() {
@@ -401,9 +401,19 @@ impl<'a> Lexer<'a> {
             }
         }
 
-        let value = self.raw_nenyr[start_pos..self.position].parse().unwrap();
+        let value = &self.raw_nenyr[start_pos..self.position];
 
-        NenyrTokens::Number(value)
+        match value.parse() {
+            Ok(value) => Ok(NenyrTokens::Number(value)),
+            Err(_) => Err(NenyrError::new(
+                Some("".to_string()),
+                self.context_name.clone(),
+                self.context_path.to_string(),
+                "".to_string(),
+                NenyrErrorKind::SyntaxError,
+                self.trace_lexer_position(),
+            )),
+        }
     }
 
     /// Parses a string literal from the input, delimited by a given character.
@@ -487,6 +497,7 @@ impl<'a> Lexer<'a> {
             "Dark" => NenyrTokens::Dark,
 
             // Animation pattern
+            "Animation" => NenyrTokens::Animation,
             "Fraction" => NenyrTokens::Fraction,
             "Progressive" => NenyrTokens::Progressive,
             "From" => NenyrTokens::From,
@@ -872,7 +883,7 @@ mod tests {
         let input = "123";
         let mut lexer = Lexer::new(input, "");
 
-        assert_eq!(lexer.next_token(), Ok(NenyrTokens::Number(123)));
+        assert_eq!(lexer.next_token(), Ok(NenyrTokens::Number(123.0)));
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
 
