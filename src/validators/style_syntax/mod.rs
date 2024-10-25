@@ -5,7 +5,7 @@ use regex::Regex;
 /// This trait provides a method to check if a given style rule
 /// adheres to the defined syntax standards. Currently, it only
 /// validates that the rule does not contain any invalid characters.
-/// The invalid characters defined include curly braces ( special 
+/// The invalid characters defined include curly braces ( special
 /// symbols such as `@`, `!`, and the delimiters `;` and `:`.
 /// This validation helps ensure that style rules
 /// are formatted correctly before being processed further.

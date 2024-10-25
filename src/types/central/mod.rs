@@ -8,14 +8,14 @@ use super::{
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct CentralContext {
-    imports: Option<NenyrImports>,
-    typefaces: Option<NenyrTypefaces>,
-    breakpoints: Option<NenyrBreakpoints>,
-    aliases: Option<NenyrAliases>,
-    variables: Option<NenyrVariables>,
-    themes: Option<NenyrThemes>,
-    animations: Option<IndexMap<String, NenyrAnimation>>,
-    classes: Option<IndexMap<String, NenyrStyleClass>>,
+    pub imports: Option<NenyrImports>,
+    pub typefaces: Option<NenyrTypefaces>,
+    pub breakpoints: Option<NenyrBreakpoints>,
+    pub aliases: Option<NenyrAliases>,
+    pub variables: Option<NenyrVariables>,
+    pub themes: Option<NenyrThemes>,
+    pub animations: Option<IndexMap<String, NenyrAnimation>>,
+    pub classes: Option<IndexMap<String, NenyrStyleClass>>,
 }
 
 impl CentralContext {
@@ -58,5 +58,21 @@ impl CentralContext {
         if let Some(animations) = &mut self.animations {
             animations.insert(animation_name, animation);
         }
+    }
+
+    pub(crate) fn add_variables_to_context(&mut self, variables: NenyrVariables) {
+        self.variables = Some(variables);
+    }
+
+    pub(crate) fn add_aliases_to_context(&mut self, aliases: NenyrAliases) {
+        self.aliases = Some(aliases);
+    }
+
+    pub(crate) fn add_typefaces_to_context(&mut self, typefaces: NenyrTypefaces) {
+        self.typefaces = Some(typefaces);
+    }
+
+    pub(crate) fn add_imports_to_context(&mut self, imports: NenyrImports) {
+        self.imports = Some(imports);
     }
 }

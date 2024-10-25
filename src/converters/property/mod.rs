@@ -528,7 +528,8 @@ mod tests {
         );
         assert_eq!(
             Some("border-bottom-left-radius".to_string()),
-            nenyr_token.convert_nenyr_property_to_css_property(&NenyrTokens::BorderBottomLeftRadius)
+            nenyr_token
+                .convert_nenyr_property_to_css_property(&NenyrTokens::BorderBottomLeftRadius)
         );
         assert_eq!(
             Some("border-bottom-right-radius".to_string()),
@@ -929,7 +930,8 @@ mod tests {
         );
         assert_eq!(
             Some("drop-initial-after-adjust".to_string()),
-            nenyr_token.convert_nenyr_property_to_css_property(&NenyrTokens::DropInitialAfterAdjust)
+            nenyr_token
+                .convert_nenyr_property_to_css_property(&NenyrTokens::DropInitialAfterAdjust)
         );
         assert_eq!(
             Some("drop-initial-after-align".to_string()),
@@ -942,7 +944,8 @@ mod tests {
         );
         assert_eq!(
             Some("drop-initial-before-align".to_string()),
-            nenyr_token.convert_nenyr_property_to_css_property(&NenyrTokens::DropInitialBeforeAlign)
+            nenyr_token
+                .convert_nenyr_property_to_css_property(&NenyrTokens::DropInitialBeforeAlign)
         );
         assert_eq!(
             Some("drop-initial-size".to_string()),
@@ -1547,7 +1550,8 @@ mod tests {
         );
         assert_ne!(
             Some("BorderBottomLeftRadius".to_string()),
-            nenyr_token.convert_nenyr_property_to_css_property(&NenyrTokens::BorderBottomLeftRadius)
+            nenyr_token
+                .convert_nenyr_property_to_css_property(&NenyrTokens::BorderBottomLeftRadius)
         );
         assert_ne!(
             Some("BorderBottomRightRadius".to_string()),
@@ -1948,7 +1952,8 @@ mod tests {
         );
         assert_ne!(
             Some("DropInitialAfterAdjust".to_string()),
-            nenyr_token.convert_nenyr_property_to_css_property(&NenyrTokens::DropInitialAfterAdjust)
+            nenyr_token
+                .convert_nenyr_property_to_css_property(&NenyrTokens::DropInitialAfterAdjust)
         );
         assert_ne!(
             Some("DropInitialAfterAlign".to_string()),
@@ -1961,7 +1966,8 @@ mod tests {
         );
         assert_ne!(
             Some("DropInitialBeforeAlign".to_string()),
-            nenyr_token.convert_nenyr_property_to_css_property(&NenyrTokens::DropInitialBeforeAlign)
+            nenyr_token
+                .convert_nenyr_property_to_css_property(&NenyrTokens::DropInitialBeforeAlign)
         );
         assert_ne!(
             Some("DropInitialSize".to_string()),

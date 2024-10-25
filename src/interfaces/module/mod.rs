@@ -257,14 +257,30 @@ impl<'a> NenyrParser<'a> {
     /// This function may return a `NenyrError` if:
     /// - An invalid method type is encountered that is not supported within
     ///   the module context.
-    fn process_module_methods(&mut self, _module_context: &mut ModuleContext) -> NenyrResult<()> {
+    fn process_module_methods(&mut self, module_context: &mut ModuleContext) -> NenyrResult<()> {
         self.processing_state.set_context_active(true);
 
         match self.current_token {
-            NenyrTokens::Aliases => {}
-            NenyrTokens::Variables => {}
-            NenyrTokens::Animation => {}
-            NenyrTokens::Class => {}
+            NenyrTokens::Aliases => {
+                let aliases = self.process_aliases_method()?;
+
+                module_context.add_aliases_to_context(aliases);
+            }
+            NenyrTokens::Variables => {
+                let variables = self.process_variables_method(false)?;
+
+                module_context.add_variables_to_context(variables);
+            }
+            NenyrTokens::Animation => {
+                let (animation_name, animation) = self.process_animation_method()?;
+
+                module_context.add_animation_to_context(animation_name, animation);
+            }
+            NenyrTokens::Class => {
+                let (class_name, style_class) = self.process_class_method()?;
+
+                module_context.add_style_class_to_context(class_name, style_class);
+            }
             _ => {
                 return Err(NenyrError::new(
                     Some("Ensure that only valid methods supported by the module context are declared. Review the documentation for methods allowed within `Construct Module('moduleName') { ... }`.".to_string()),

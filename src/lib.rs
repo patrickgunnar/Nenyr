@@ -4,22 +4,15 @@ use lexer::Lexer;
 use store::NenyrProcessStore;
 use tokens::NenyrTokens;
 use types::ast::NenyrAst;
-use validators::{identifier::NenyrIdentifierValidator, style_syntax::NenyrStyleSyntaxValidator};
+use validators::{
+    identifier::NenyrIdentifierValidator, import::NenyrImportValidator,
+    style_syntax::NenyrStyleSyntaxValidator, typeface::NenyrTypefaceValidator,
+    variable_value::NenyrVariableValueValidator,
+};
 
 mod converters {
     pub mod property;
     pub mod style_pattern;
-}
-
-mod creators {
-    pub mod aliases;
-    pub mod animation;
-    pub mod breakpoints;
-    pub mod class;
-    pub mod imports;
-    pub mod themes;
-    pub mod typefaces;
-    pub mod variables;
 }
 
 mod interfaces {
@@ -87,6 +80,9 @@ impl<'a> NenyrIdentifierValidator for NenyrParser<'a> {}
 impl<'a> NenyrStyleSyntaxValidator for NenyrParser<'a> {}
 impl<'a> NenyrPropertyConverter for NenyrParser<'a> {}
 impl<'a> NenyrStylePatternConverter for NenyrParser<'a> {}
+impl<'a> NenyrVariableValueValidator for NenyrParser<'a> {}
+impl<'a> NenyrTypefaceValidator for NenyrParser<'a> {}
+impl<'a> NenyrImportValidator for NenyrParser<'a> {}
 
 impl<'a> NenyrParser<'a> {
     pub fn new(raw_nenyr: &'a str, context_path: &'a str) -> Self {
@@ -121,12 +117,12 @@ impl<'a> NenyrParser<'a> {
             NenyrTokens::Layout => {
                 let layout_context = self.process_layout_context()?;
 
-                println!("\n\n{:?}", layout_context);
+                println!("\n\n{:#?}", layout_context);
             }
             NenyrTokens::Module => {
                 let module_context = self.process_module_context()?;
 
-                println!("\n\n{:?}", module_context);
+                println!("\n\n{:#?}", module_context);
             }
             _ => {
                 return Err(NenyrError::new(

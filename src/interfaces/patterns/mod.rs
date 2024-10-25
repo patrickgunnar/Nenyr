@@ -4,7 +4,7 @@ use crate::{
     loop_while_not,
     tokens::NenyrTokens,
     types::class::NenyrStyleClass,
-    validators::style_syntax::NenyrStyleSyntaxValidator,
+    validators::{identifier::NenyrIdentifierValidator, style_syntax::NenyrStyleSyntaxValidator},
     NenyrParser, NenyrResult,
 };
 
@@ -389,6 +389,23 @@ impl<'a> NenyrParser<'a> {
                 style_class,
             );
         } else if let NenyrTokens::Identifier(nickname) = self.current_token.clone() {
+            if !self.is_valid_identifier(&nickname) {
+                let error_message = if is_panoramic {
+                    &format!("The validation of the `{}` alias name of the `PanoramicViewer` pattern in the `{}` class failed. The provided name does not meet the required format.", nickname, class_name)
+                } else {
+                    &format!("The validation of the `{}` alias name in the `{}` class failed. The provided name does not meet the required format.", nickname, class_name)
+                };
+
+                return Err(NenyrError::new(
+                    Some("A valid alias name should contain only alphanumeric characters, with the first character being an alphabetic letter. Examples: `'myAliasName01'`, `'aliasName01'`, etc.".to_string()),
+                    self.context_name.clone(),
+                    self.context_path.to_string(),
+                    self.add_nenyr_token_to_error(&error_message),
+                    NenyrErrorKind::SyntaxError,
+                    self.get_tracing(),
+                ));
+            }
+
             return self.retrieve_nenyr_value(
                 pattern_name,
                 class_name,

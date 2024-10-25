@@ -16,12 +16,12 @@ use indexmap::IndexMap;
 /// - `responsive_patterns`: An optional map of responsive style patterns, organized by panoramic names.
 #[derive(Debug, PartialEq, Clone)]
 pub struct NenyrStyleClass {
-    class_name: String,
-    deriving_from: Option<String>,
-    is_important: Option<bool>,
+    pub class_name: String,
+    pub deriving_from: Option<String>,
+    pub is_important: Option<bool>,
 
-    style_patterns: Option<IndexMap<String, IndexMap<String, String>>>,
-    responsive_patterns: Option<IndexMap<String, IndexMap<String, IndexMap<String, String>>>>,
+    pub style_patterns: Option<IndexMap<String, IndexMap<String, String>>>,
+    pub responsive_patterns: Option<IndexMap<String, IndexMap<String, IndexMap<String, String>>>>,
 }
 
 impl NenyrStyleClass {
@@ -255,7 +255,7 @@ mod tests {
     #[test]
     fn test_add_responsive_style_rule() {
         let mut class = NenyrStyleClass::new("test-class".to_string(), None);
-        
+
         class.add_responsive_style_rule(
             "lg".to_string(),
             "base-pattern".to_string(),

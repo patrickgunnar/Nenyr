@@ -129,11 +129,27 @@ impl<'a> NenyrParser<'a> {
         self.processing_state.set_context_active(true);
 
         match self.current_token {
-            NenyrTokens::Imports => {}
-            NenyrTokens::Typefaces => {}
+            NenyrTokens::Imports => {
+                let imports = self.process_imports_method()?;
+
+                central_context.add_imports_to_context(imports);
+            }
+            NenyrTokens::Typefaces => {
+                let typefaces = self.process_typefaces_method()?;
+
+                central_context.add_typefaces_to_context(typefaces);
+            }
             NenyrTokens::Breakpoints => {}
-            NenyrTokens::Aliases => {}
-            NenyrTokens::Variables => {}
+            NenyrTokens::Aliases => {
+                let aliases = self.process_aliases_method()?;
+
+                central_context.add_aliases_to_context(aliases);
+            }
+            NenyrTokens::Variables => {
+                let variables = self.process_variables_method(false)?;
+
+                central_context.add_variables_to_context(variables);
+            }
             NenyrTokens::Themes => {}
             NenyrTokens::Animation => {
                 let (animation_name, animation) = self.process_animation_method()?;
