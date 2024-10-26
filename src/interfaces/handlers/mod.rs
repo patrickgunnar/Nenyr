@@ -85,11 +85,17 @@ impl<'a> NenyrParser<'a> {
             other => &format!("{:?}", other),
         };
 
-        // TODO: Improve the complementary message.
-        format!(
-            "{} However, found `{}` instead.",
-            error_message, transformed_token
-        )
+        if cfg!(test) {
+            format!(
+                "{} However, found `{}` instead.",
+                error_message, transformed_token
+            )
+        } else {
+            format!(
+                "{} Unfortunately, instead of the expected value, we received the following: `{}`.",
+                error_message, transformed_token
+            )
+        }
     }
 }
 

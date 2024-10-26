@@ -21,7 +21,6 @@ pub enum NenyrState {
 /// - **Internal block state**: Whether an internal block within a structure is active.
 /// - **Extra block state**: Used for additional block tracking beyond basic blocks.
 /// - **Complementary block state**: Tracks the status of secondary or complementary parsing areas.
-/// - **Nested content state**: Manages whether nested content is actively being parsed.
 ///
 /// The parser may use these states to determine what action should be taken or how
 /// certain conditions are interpreted based on the current state.
@@ -39,8 +38,6 @@ pub struct NenyrProcessStore {
     is_extra_block_active: NenyrState,
     /// Tracks if a complementary block, which may represent an optional or secondary section, is active.
     is_complementary_block_active: NenyrState,
-    /// Tracks if nested content within a block is being parsed.
-    is_nested_content_active: NenyrState,
 }
 
 impl NenyrProcessStore {
@@ -53,7 +50,6 @@ impl NenyrProcessStore {
             is_internal_block_active: NenyrState::Inactive,
             is_extra_block_active: NenyrState::Inactive,
             is_complementary_block_active: NenyrState::Inactive,
-            is_nested_content_active: NenyrState::Inactive,
         }
     }
 
@@ -135,19 +131,6 @@ impl NenyrProcessStore {
         }
     }
 
-    /// Sets the nested content state to `Active` or `Inactive`.
-    ///
-    /// # Arguments
-    ///
-    /// * `is_active` - A boolean indicating whether the nested content should be active.
-    pub fn set_nested_content_active(&mut self, is_active: bool) {
-        if is_active {
-            self.is_nested_content_active = NenyrState::Active;
-        } else {
-            self.is_nested_content_active = NenyrState::Inactive;
-        }
-    }
-
     /// Checks if the context is currently active.
     ///
     /// # Returns
@@ -181,11 +164,6 @@ impl NenyrProcessStore {
     pub fn is_complementary_block_active(&self) -> bool {
         self.is_complementary_block_active == NenyrState::Active
     }
-
-    /// Checks if nested content is active.
-    pub fn is_nested_content_active(&self) -> bool {
-        self.is_nested_content_active == NenyrState::Active
-    }
 }
 
 #[cfg(test)]
@@ -202,7 +180,6 @@ mod tests {
         store.set_extra_block_active(true);
         store.set_internal_block_active(true);
         store.set_nested_block_active(true);
-        store.set_nested_content_active(true);
 
         assert!(store.is_block_active());
         assert!(store.is_complementary_block_active());
@@ -210,7 +187,6 @@ mod tests {
         assert!(store.is_extra_block_active());
         assert!(store.is_internal_block_active());
         assert!(store.is_nested_block_active());
-        assert!(store.is_nested_content_active());
     }
 
     #[test]
@@ -223,7 +199,6 @@ mod tests {
         store.set_extra_block_active(false);
         store.set_internal_block_active(false);
         store.set_nested_block_active(false);
-        store.set_nested_content_active(false);
 
         assert!(!store.is_block_active());
         assert!(!store.is_complementary_block_active());
@@ -231,7 +206,6 @@ mod tests {
         assert!(!store.is_extra_block_active());
         assert!(!store.is_internal_block_active());
         assert!(!store.is_nested_block_active());
-        assert!(!store.is_nested_content_active());
     }
 
     #[test]
@@ -244,7 +218,6 @@ mod tests {
         store.set_extra_block_active(true);
         store.set_internal_block_active(false);
         store.set_nested_block_active(true);
-        store.set_nested_content_active(false);
 
         assert_ne!(store.is_block_active(), true);
         assert_eq!(store.is_complementary_block_active(), true);
@@ -252,7 +225,6 @@ mod tests {
         assert_eq!(store.is_extra_block_active(), true);
         assert_ne!(store.is_internal_block_active(), true);
         assert_eq!(store.is_nested_block_active(), true);
-        assert_ne!(store.is_nested_content_active(), true);
     }
 
     #[test]
@@ -265,7 +237,6 @@ mod tests {
         store.set_extra_block_active(false);
         store.set_internal_block_active(true);
         store.set_nested_block_active(false);
-        store.set_nested_content_active(true);
 
         assert_ne!(store.is_block_active(), false);
         assert_ne!(store.is_complementary_block_active(), true);
@@ -273,6 +244,5 @@ mod tests {
         assert_ne!(store.is_extra_block_active(), true);
         assert_ne!(store.is_internal_block_active(), false);
         assert_ne!(store.is_nested_block_active(), true);
-        assert_ne!(store.is_nested_content_active(), false);
     }
 }

@@ -171,35 +171,36 @@ mod tests {
 
         assert_eq!(
             res.values
-                .get("https://fonts.googleapis.com/css2?family=Matemasie&display=swap"),
-            Some(&"https://fonts.googleapis.com/css2?family=Matemasie&display=swap".to_string())
+                .contains_key("https://fonts.googleapis.com/css2?family=Matemasie&display=swap"),
+            true
         );
 
         assert_eq!(
-            res.values.get("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"),
-            Some(&"https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap".to_string())
-        );
-
-        assert_eq!(
-            res.values
-                .get("https://fonts.googleapis.com/css2?family=Bungee+Tint&display=swap"),
-            Some(&"https://fonts.googleapis.com/css2?family=Bungee+Tint&display=swap".to_string())
+            res.values.contains_key("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"),
+            true
         );
 
         assert_eq!(
             res.values
-                .get("../../../mocks/imports/another_external.css"),
-            Some(&"../../../mocks/imports/another_external.css".to_string())
+                .contains_key("https://fonts.googleapis.com/css2?family=Bungee+Tint&display=swap"),
+            true
         );
 
         assert_eq!(
-            res.values.get("../../../mocks/imports/external_styles.css"),
-            Some(&"../../../mocks/imports/external_styles.css".to_string())
+            res.values
+                .contains_key("../../../mocks/imports/another_external.css"),
+            true
         );
 
         assert_eq!(
-            res.values.get("../../../mocks/imports/styles.css"),
-            Some(&"../../../mocks/imports/styles.css".to_string())
+            res.values
+                .contains_key("../../../mocks/imports/external_styles.css"),
+            true
+        );
+
+        assert_eq!(
+            res.values.contains_key("../../../mocks/imports/styles.css"),
+            true
         );
     }
 

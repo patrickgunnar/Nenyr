@@ -608,17 +608,6 @@ impl<'a> NenyrParser<'a> {
         if let Some(property) = self.convert_nenyr_property_to_css_property(&self.current_token) {
             return self.process_animation_value(animation_name, property, keyframe);
         } else if let NenyrTokens::Identifier(nickname) = self.current_token.clone() {
-            if !self.is_valid_identifier(&nickname) {
-                return Err(NenyrError::new(
-                    Some("A valid alias name should contain only alphanumeric characters, with the first character being an alphabetic letter. Examples: `'myAliasName01'`, `'aliasName01'`, etc.".to_string()),
-                    self.context_name.clone(),
-                    self.context_path.to_string(),
-                    self.add_nenyr_token_to_error(&format!("The validation of the `{}` alias name in the `{}` animation failed. The provided name does not meet the required format.", nickname, animation_name)),
-                    NenyrErrorKind::SyntaxError,
-                    self.get_tracing(),
-                ));
-            }
-
             return self.process_animation_value(animation_name, nickname, keyframe);
         }
 
