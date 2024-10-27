@@ -89,14 +89,14 @@ impl<'a> NenyrParser<'a> {
             &format!("A duplicated comma was found in the panoramic block in the `{}` class. The parser expected to find a new breakpoint statement but none was found.", class_name),
             Some(format!("Ensure that a comma is placed after each breakpoint definition inside the panoramic block statement in the `{}` class to separate elements correctly. Proper syntax is required for the parser to process the context. Example: `PanoramicViewer({{ breakpoint({{ ... }}), breakpoint({{ ... }}), ... }})`.", class_name)),
             &format!("All breakpoints blocks of the panoramic pattern inside the `{}` class block must be separated by commas. A comma is missing in the breakpoint block of the panoramic pattern definition. The parser expected a comma to separate elements but did not find one.", class_name),
-            || self.processing_state.is_internal_block_active(),
-            |is_active| self.processing_state.set_internal_block_active(is_active),
+            || self.processing_state.is_complementary_block_active(),
+            |is_active| self.processing_state.set_complementary_block_active(is_active),
             {
                 self.retrieve_panoramic_identifier(class_name, style_class)?;
             }
         );
 
-        self.processing_state.set_internal_block_active(false);
+        self.processing_state.set_complementary_block_active(false);
 
         Ok(())
     }
@@ -138,7 +138,7 @@ impl<'a> NenyrParser<'a> {
             ));
         }
 
-        self.processing_state.set_internal_block_active(true);
+        self.processing_state.set_complementary_block_active(true);
         style_class.reset_panoramic_node(&breakpoint_name);
 
         // First, parse the expression within the parentheses.
@@ -164,41 +164,61 @@ impl<'a> NenyrParser<'a> {
         )
     }
 
-    /// Processes the children within a panoramic block for each breakpoint.
+    /// Processes children within a panoramic block for each specified breakpoint.
     ///
-    /// This method delegates the processing of specific rules or patterns within each
-    /// breakpoint block and ensures correct delimiter handling.
+    /// This function processes style rules or patterns for a given class within each
+    /// breakpoint block, ensuring that all delimiters are correctly handled.
+    /// It performs validation to detect duplicated or missing delimiters and
+    /// verifies the structure of the child elements within each breakpoint, following
+    /// proper syntax requirements.
     ///
     /// # Arguments
-    /// - `class_name`: The class being processed.
-    /// - `breakpoint_name`: The name of the breakpoint being handled.
-    /// - `style_class`: A mutable reference to the style class being modified.
+    ///
+    /// - `class_name`: The name of the class being processed, representing the
+    ///   current style context.
+    /// - `breakpoint_name`: The name of the breakpoint being handled, which specifies
+    ///   the responsive context (e.g., mobile, tablet, desktop).
+    /// - `style_class`: A mutable reference to the `NenyrStyleClass` being modified
+    ///   for the given class and breakpoint.
     ///
     /// # Returns
-    /// - `NenyrResult<()>`: Indicates success or provides an error if the syntax within the breakpoint is malformed.
+    ///
+    /// - `NenyrResult<()>`: Returns `Ok(())` if the panoramic block and its
+    ///   children are processed successfully. If there is a syntax issue within
+    ///   the breakpoint block (e.g., missing or duplicate delimiters), this
+    ///   function returns an appropriate `NenyrError`.
     ///
     /// # Errors
-    /// - Throws an error if child elements are incorrectly structured or delimiters are missing.
+    ///
+    /// - Returns an error if:
+    ///   - Duplicated delimiters are detected inside the breakpoint block. For instance,
+    ///     multiple consecutive commas within a block, which the parser flags as incorrect.
+    ///   - Missing commas are found between child elements, where each block is expected
+    ///     to end with a comma to maintain proper separation.
+    ///   - Child elements are incorrectly structured, violating the expected syntax rules
+    ///     for nested patterns within a panoramic block.
     fn process_panoramic_children(
         &mut self,
         class_name: &str,
         breakpoint_name: &str,
         style_class: &mut NenyrStyleClass,
     ) -> NenyrResult<()> {
-        match self.current_token {
-            NenyrTokens::CurlyBracketClose => Ok(()),
-            _ => {
-                self.process_patterns_methods(
-                    class_name,
-                    style_class,
-                    true,
-                    &Some(breakpoint_name.to_string()),
-                )?;
-
-                // Processes the next token
-                self.process_next_token()
+        loop_while_not!(
+            self,
+            Some(format!("Remove any duplicated commas from the `{}` breakpoint in the `{}` class block to ensure proper syntax. The parser expects every breakpoint block to follow valid delimiters. Example: `Declare Class('{}') {{ PanoramicViewer({{ {}({{ ... }}) }}) }}`.", breakpoint_name, class_name, class_name, breakpoint_name)),
+            &format!("A duplicated comma was found inside the `{}` breakpoint in the `{}` class block. The parser expected to find a new breakpoint block, but it was not found.", breakpoint_name, class_name),
+            Some(format!("Ensure that a comma is placed after each breakpoint block inside the `{}` class to separate elements correctly. Proper syntax is required for the parser to process the context. Example: `Declare Class('{}') {{ PanoramicViewer({{ {}({{ ... }}) }}) }}`.", class_name, class_name, breakpoint_name)),
+            &format!("All breakpoint inside the `{}` class block must be separated by commas. A comma is missing after the breakpoint block definition. The parser expected a comma to separate elements but did not find one.", class_name),
+            || self.processing_state.is_internal_block_active(),
+            |is_active| self.processing_state.set_internal_block_active(is_active),
+            {
+                self.process_patterns_methods(class_name, style_class, true, &Some(breakpoint_name.to_string()))?;
             }
-        }
+        );
+
+        self.processing_state.set_internal_block_active(false);
+
+        Ok(())
     }
 }
 
@@ -288,7 +308,7 @@ mod tests {
                 "{:?}",
                 parser.process_panoramic_pattern("myClassName", &mut style_class)
             ),
-            "Err(NenyrError { suggestion: Some(\"Ensure that the `myBreakpoint` breakpoint's patterns statement is properly closed with a curly bracket `}`. Correct syntax should be: `Class('myClassName') { PanoramicViewer({ myBreakpoint({ ... }), ... }) }`.\"), context_name: None, context_path: \"\", error_message: \"A missing closing curly bracket `}` was expected to properly close the `myBreakpoint` breakpoint's patterns statement in the `myClassName` class. However, found `)` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: None, line_after: None, error_line: Some(\"({ myBreakpoint({ After({ backgroundColor: 'blue', border: '10px solid red' }) ) })\"), error_on_line: 1, error_on_col: 81, error_on_pos: 80 } })".to_string()
+            "Err(NenyrError { suggestion: Some(\"Ensure that a comma is placed after each breakpoint block inside the `myClassName` class to separate elements correctly. Proper syntax is required for the parser to process the context. Example: `Declare Class('myClassName') { PanoramicViewer({ myBreakpoint({ ... }) }) }`.\"), context_name: None, context_path: \"\", error_message: \"All breakpoint inside the `myClassName` class block must be separated by commas. A comma is missing after the breakpoint block definition. The parser expected a comma to separate elements but did not find one. However, found `)` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: None, line_after: None, error_line: Some(\"({ myBreakpoint({ After({ backgroundColor: 'blue', border: '10px solid red' }) ) })\"), error_on_line: 1, error_on_col: 81, error_on_pos: 80 } })".to_string()
         );
     }
 }

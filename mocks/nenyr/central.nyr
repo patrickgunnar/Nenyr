@@ -17,9 +17,9 @@ Construct Central {
         Import("https://fonts.googleapis.com/css2?family=Matemasie&display=swap"),
         Import("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"),
         Import("https://fonts.googleapis.com/css2?family=Bungee+Tint&display=swap"),
-        Import("../imports/another_external.css"),
-        Import("../imports/external_styles.css"),
-        Import("../imports/styles.css"),
+        Import("../../mocks/imports/another_external.css"),
+        Import("../../mocks/imports/external_styles.css"),
+        Import("../../mocks/imports/styles.css"),
     ]),
     // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
     // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -28,12 +28,12 @@ Construct Central {
     // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
     // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     Declare Typefaces({
-        roseMartin: "../typefaces/rosemartin.regular.otf",
-        regularEot: "../typefaces/showa-source-curry.regular-webfont.eot",
-        regularSvg: "../typefaces/showa-source-curry.regular-webfont.svg",
-        regularTtf: "../typefaces/showa-source-curry.regular-webfont.ttf",
-        regularWoff: "../typefaces/showa-source-curry.regular-webfont.woff",
-        regularWoff2: "../typefaces/showa-source-curry.regular-webfont.woff2"
+        roseMartin: "../../mocks/typefaces/rosemartin.regular.otf",
+        regularEot: "../../mocks/typefaces/showa-source-curry.regular-webfont.eot",
+        regularSvg: "../../mocks/typefaces/showa-source-curry.regular-webfont.svg",
+        regularTtf: "../../mocks/typefaces/showa-source-curry.regular-webfont.ttf",
+        regularWoff: "../../mocks/typefaces/showa-source-curry.regular-webfont.woff",
+        regularWoff2: "../../mocks/typefaces/showa-source-curry.regular-webfont.woff2"
     }),
     // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
     // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -865,11 +865,16 @@ Construct Central {
                 })
             }),
             onDeskDesktop({
+                Stylesheet({
+                    pdg: "${m15px20}",
+                    fntSize: "0.9em",
+                    bdRadius: "5px"
+                }),
                 Hover({
                     clr: "${secondaryColor}",
                     bgd: "${accColor}"
-                })
-                /*After({
+                }),
+                After({
                     content: "' '",
                     dp: "block",
                     wd: "50%",
@@ -877,7 +882,7 @@ Construct Central {
                     bgd: "${primaryColor}",
                     mgT: "10px",
                     mgB: "0"
-                })*/
+                })
             })
         })
     },
@@ -912,14 +917,19 @@ Construct Central {
                 Stylesheet({
                     pdg: "${m15px25}",
                     fntSize: "1.1em"
-                })
-                /*After({
+                }),
+                After({
                     content: "'✨'",
                     pos: "absolute",
                     top: "10px",
                     left: "10px",
                     fntSize: "1.5em"
-                })*/
+                }),
+                Hover({
+                    bgd: "${accColor}",
+                    clr: "${primaryColor}",
+                    boxShdw: "0 6px 12px ${shadowColor}"
+                }),
             })
         })
     },
@@ -1036,14 +1046,12 @@ Construct Central {
                     padding: "${m15px20}",
                     fontSize: "0.9em",
                     borderRadius: "5px"
-                })
-            }),
-            onDeskDesktop({
+                }),
                 Hover({
                     color: "${secondaryColor}",
                     background: "${accColor}"
-                })
-                /*After({
+                }),
+                After({
                     content: "''",
                     display: "block",
                     width: "50%",
@@ -1051,7 +1059,22 @@ Construct Central {
                     background: "${primaryColor}",
                     marginTop: "10px",
                     marginBottom: "0"
-                })*/
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    color: "${secondaryColor}",
+                    background: "${accColor}"
+                }),
+                After({
+                    content: "''",
+                    display: "block",
+                    width: "50%",
+                    height: "2px",
+                    background: "${primaryColor}",
+                    marginTop: "10px",
+                    marginBottom: "0"
+                })
             })
         })
     },
@@ -1080,20 +1103,47 @@ Construct Central {
                 Stylesheet({
                     padding: "${m10px16}",
                     fontSize: "1em"
-                })
-            }),
-            onDeskDesktop({
-                Stylesheet({
-                    padding: "${m15px25}",
-                    fontSize: "1.1em"
-                })
-                /*After({
+                }),
+                Hover({
+                    background: "${accColor}",
+                    color: "${primaryColor}",
+                    boxShadow: "0 6px 12px ${shadowColor}"
+                }),
+                After({
                     content: "'✨'",
                     position: "absolute",
                     top: "10px",
                     left: "10px",
                     fontSize: "1.5em"
-                })*/
+                }),
+                Before({
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                }),
+            }),
+            onDeskDesktop({
+                Stylesheet({
+                    padding: "${m15px25}",
+                    fontSize: "1.1em"
+                }),
+                Hover({
+                    background: "${accColor}",
+                    color: "${primaryColor}",
+                    boxShadow: "0 6px 12px ${shadowColor}"
+                }),
+                After({
+                    content: "'✨'",
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                    fontSize: "1.5em"
+                }),
+                Before({
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                }),
             })
         })
     },

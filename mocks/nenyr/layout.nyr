@@ -804,11 +804,16 @@ Construct Layout("dynamicLayout") {
                 })
             }),
             onDeskDesktop({
+                Stylesheet({
+                    pdg: "${m15px20}",
+                    fntSize: "0.9em",
+                    bdRadius: "5px"
+                }),
                 Hover({
                     clr: "${secondaryColor}",
                     bgd: "${accColor}"
-                })
-                /*After({
+                }),
+                After({
                     content: "' '",
                     dp: "block",
                     wd: "50%",
@@ -816,7 +821,7 @@ Construct Layout("dynamicLayout") {
                     bgd: "${primaryColor}",
                     mgT: "10px",
                     mgB: "0"
-                })*/
+                })
             })
         })
     },
@@ -851,14 +856,19 @@ Construct Layout("dynamicLayout") {
                 Stylesheet({
                     pdg: "${m15px25}",
                     fntSize: "1.1em"
-                })
-                /*After({
+                }),
+                After({
                     content: "'✨'",
                     pos: "absolute",
                     top: "10px",
                     left: "10px",
                     fntSize: "1.5em"
-                })*/
+                }),
+                Hover({
+                    bgd: "${accColor}",
+                    clr: "${primaryColor}",
+                    boxShdw: "0 6px 12px ${shadowColor}"
+                }),
             })
         })
     },
@@ -975,14 +985,12 @@ Construct Layout("dynamicLayout") {
                     padding: "${m15px20}",
                     fontSize: "0.9em",
                     borderRadius: "5px"
-                })
-            }),
-            onDeskDesktop({
+                }),
                 Hover({
                     color: "${secondaryColor}",
                     background: "${accColor}"
-                })
-                /*After({
+                }),
+                After({
                     content: "''",
                     display: "block",
                     width: "50%",
@@ -990,7 +998,22 @@ Construct Layout("dynamicLayout") {
                     background: "${primaryColor}",
                     marginTop: "10px",
                     marginBottom: "0"
-                })*/
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    color: "${secondaryColor}",
+                    background: "${accColor}"
+                }),
+                After({
+                    content: "''",
+                    display: "block",
+                    width: "50%",
+                    height: "2px",
+                    background: "${primaryColor}",
+                    marginTop: "10px",
+                    marginBottom: "0"
+                })
             })
         })
     },
@@ -1019,20 +1042,47 @@ Construct Layout("dynamicLayout") {
                 Stylesheet({
                     padding: "${m10px16}",
                     fontSize: "1em"
-                })
-            }),
-            onDeskDesktop({
-                Stylesheet({
-                    padding: "${m15px25}",
-                    fontSize: "1.1em"
-                })
-                /*After({
+                }),
+                Hover({
+                    background: "${accColor}",
+                    color: "${primaryColor}",
+                    boxShadow: "0 6px 12px ${shadowColor}"
+                }),
+                After({
                     content: "'✨'",
                     position: "absolute",
                     top: "10px",
                     left: "10px",
                     fontSize: "1.5em"
-                })*/
+                }),
+                Before({
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                }),
+            }),
+            onDeskDesktop({
+                Stylesheet({
+                    padding: "${m15px25}",
+                    fontSize: "1.1em"
+                }),
+                Hover({
+                    background: "${accColor}",
+                    color: "${primaryColor}",
+                    boxShadow: "0 6px 12px ${shadowColor}"
+                }),
+                After({
+                    content: "'✨'",
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                    fontSize: "1.5em"
+                }),
+                Before({
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                }),
             })
         })
     },
