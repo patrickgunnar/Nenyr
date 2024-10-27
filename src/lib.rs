@@ -186,3 +186,968 @@ impl<'a> NenyrParser<'a> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::NenyrParser;
+
+    #[test]
+    fn central_context_is_valid() {
+        let raw_nenyr = "Construct Central {
+    Declare Imports([
+        Import('https://fonts.googleapis.com/css2?family=Matemasie&display=swap'),
+        Import('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap'),
+        Import('https://fonts.googleapis.com/css2?family=Bungee+Tint&display=swap'),
+        Import('../mocks/imports/another_external.css'),
+        Import('../mocks/imports/external_styles.css'),
+        Import('../mocks/imports/styles.css'),
+    ]),
+    Declare Typefaces({
+        roseMartin: '../mocks/typefaces/rosemartin.regular.otf',
+        regularEot: '../mocks/typefaces/showa-source-curry.regular-webfont.eot',
+        regularSvg: '../mocks/typefaces/showa-source-curry.regular-webfont.svg',
+        regularTtf: '../mocks/typefaces/showa-source-curry.regular-webfont.ttf',
+        regularWoff: '../mocks/typefaces/showa-source-curry.regular-webfont.woff',
+        regularWoff2: '../mocks/typefaces/showa-source-curry.regular-webfont.woff2'
+    }),
+    Declare Breakpoints({
+        MobileFirst({
+            onMobTablet: '780px',
+            onMobDesktop: '1240px',
+            onMobXl: '1440px',
+            onMobXXl: '2240px'
+        }),
+        DesktopFirst({
+            onDeskTablet: '780px',
+            onDeskDesktop: '1240px',
+            onDeskXl: '1440px',
+            onDeskXXl: '2240px'
+        })
+    }),
+    // Este é um comentário de linha.
+    Declare Themes({
+        Light({
+            Variables({
+                primaryColor: '#FFFFFF',
+                secondaryColor: '#CCCCCC',
+                accentColorVar: '#FF5733'
+            })
+        }),
+        Dark({
+            Variables({
+                primaryColor: '#333333',
+                secondaryColor: '#666666',
+                accentColorVar: '#FF5733'
+            })
+        })
+    }),
+    Declare Aliases({
+        bgd: background,
+        bgd: backgroundColor,
+        pdg: padding,
+        dp: display,
+        wd: width,
+        hgt: height
+    }),
+    Declare Variables({
+        myColor: '#FF6677',
+        grayColor: 'gray',
+        blueColor: 'blue',
+        redColor: 'red',
+        primaryColor: 'red',
+        primaryColor: 'yellow',
+        secondaryColor: 'white'
+    }),
+    Declare Animation('giddyRespond') {
+        Fraction(30, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Fraction(40, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction(4.0, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction([50, 70], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([5.0, 7.0], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([70, 80, 100], { // Este é um comentário de linha.
+            transform: 'translate(50%, 50%)'
+        })
+    },
+    Declare Animation('spiritedSavings') {
+        Progressive({
+            width: '${myVar}'
+        }),
+        Progressive({
+            border: '1px solid red',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Progressive({
+            backgroundColor: 'pink'
+        }),
+    },
+    /* Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    */
+    Declare Animation('grotesquePtarmigan') {
+        From({
+            width: '${myVar}'
+        }),
+        Halfway({
+            border: '1px solid red'
+        }),
+        To({
+            backgroundColor: 'pink',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        })
+    },
+    Declare Class('miniatureTrogon') Deriving('discreteAudio') {
+        Important(true),
+        Stylesheet({
+            backgroundColor: '${accentColorVar}',
+            backgroundColor: '#0000FF',
+            background: '#00FF00',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        Hover({
+            background: '${secondaryColor}',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    // Este é um comentário de linha.
+                    display: 'block', // Este é um comentário de linha.
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: '${secondaryColor}', // Este é um comentário de linha.
+                    pdg: '${m15px}'
+                })
+            })
+        })
+    },
+    Declare Class('myTestingClass') {
+        Stylesheet({
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        PanoramicViewer({
+            myBreakpoint({
+                Stylesheet({
+                    backgroundColor: 'blue',
+                    border: '10px solid red',
+                    height: '100px',
+                    width: '200px'
+                })
+            })
+        })
+    }
+}";
+        let mut parser = NenyrParser::new(raw_nenyr, "src/central.nyr");
+
+        assert_eq!(
+            format!("{:?}", parser.parse()),
+            "Ok(CentralContext(CentralContext { imports: Some(NenyrImports { values: {\"https://fonts.googleapis.com/css2?family=Matemasie&display=swap\": (), \"https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap\": (), \"https://fonts.googleapis.com/css2?family=Bungee+Tint&display=swap\": (), \"../mocks/imports/another_external.css\": (), \"../mocks/imports/external_styles.css\": (), \"../mocks/imports/styles.css\": ()} }), typefaces: Some(NenyrTypefaces { values: {\"roseMartin\": \"../mocks/typefaces/rosemartin.regular.otf\", \"regularEot\": \"../mocks/typefaces/showa-source-curry.regular-webfont.eot\", \"regularSvg\": \"../mocks/typefaces/showa-source-curry.regular-webfont.svg\", \"regularTtf\": \"../mocks/typefaces/showa-source-curry.regular-webfont.ttf\", \"regularWoff\": \"../mocks/typefaces/showa-source-curry.regular-webfont.woff\", \"regularWoff2\": \"../mocks/typefaces/showa-source-curry.regular-webfont.woff2\"} }), breakpoints: Some(NenyrBreakpoints { mobile_first: Some({\"onMobTablet\": \"780px\", \"onMobDesktop\": \"1240px\", \"onMobXl\": \"1440px\", \"onMobXXl\": \"2240px\"}), desktop_first: Some({\"onDeskTablet\": \"780px\", \"onDeskDesktop\": \"1240px\", \"onDeskXl\": \"1440px\", \"onDeskXXl\": \"2240px\"}) }), aliases: Some(NenyrAliases { values: {\"bgd\": \"background-color\", \"pdg\": \"padding\", \"dp\": \"display\", \"wd\": \"width\", \"hgt\": \"height\"} }), variables: Some(NenyrVariables { values: {\"myColor\": \"#FF6677\", \"grayColor\": \"gray\", \"blueColor\": \"blue\", \"redColor\": \"red\", \"primaryColor\": \"yellow\", \"secondaryColor\": \"white\"} }), themes: Some(NenyrThemes { light_schema: Some(NenyrVariables { values: {\"primaryColor\": \"#FFFFFF\", \"secondaryColor\": \"#CCCCCC\", \"accentColorVar\": \"#FF5733\"} }), dark_schema: Some(NenyrVariables { values: {\"primaryColor\": \"#333333\", \"secondaryColor\": \"#666666\", \"accentColorVar\": \"#FF5733\"} }) }), animations: Some({\"giddyRespond\": NenyrAnimation { animation_name: \"giddyRespond\", kind: Some(Fraction), progressive_count: None, keyframe: [Fraction { stops: [30.0], properties: {\"bgd\": \"${accentColorVar}\", \"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"} }, Fraction { stops: [40.0], properties: {\"bgd\": \"${accentColorVar}\"} }, Fraction { stops: [4.0], properties: {\"bgd\": \"${accentColorVar}\"} }, Fraction { stops: [50.0, 70.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [5.0, 7.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [70.0, 80.0, 100.0], properties: {\"transform\": \"translate(50%, 50%)\"} }] }, \"spiritedSavings\": NenyrAnimation { animation_name: \"spiritedSavings\", kind: Some(Progressive), progressive_count: Some(3), keyframe: [Progressive({\"width\": \"${myVar}\"}), Progressive({\"border\": \"10px solid red\", \"background-color\": \"blue\", \"height\": \"100px\", \"width\": \"200px\"}), Progressive({\"background-color\": \"pink\"})] }, \"grotesquePtarmigan\": NenyrAnimation { animation_name: \"grotesquePtarmigan\", kind: Some(Transitive), progressive_count: None, keyframe: [From({\"width\": \"${myVar}\"}), Halfway({\"border\": \"1px solid red\"}), To({\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"})] }}), classes: Some({\"miniatureTrogon\": NenyrStyleClass { class_name: \"miniatureTrogon\", deriving_from: Some(\"discreteAudio\"), is_important: Some(true), style_patterns: Some({\"_stylesheet\": {\"background-color\": \"#0000FF\", \"background\": \"#00FF00\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}, \":hover\": {\"background\": \"${secondaryColor}\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}}), responsive_patterns: Some({\"onMobTablet\": {\"_stylesheet\": {\"display\": \"block\"}}, \"onDeskDesktop\": {\":hover\": {\"bgd\": \"${secondaryColor}\", \"pdg\": \"${m15px}\"}}}) }, \"myTestingClass\": NenyrStyleClass { class_name: \"myTestingClass\", deriving_from: None, is_important: None, style_patterns: Some({\"_stylesheet\": {\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"}}), responsive_patterns: Some({\"myBreakpoint\": {\"_stylesheet\": {\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"}}}) }}) }))".to_string()
+        );
+    }
+
+    #[test]
+    fn central_context_is_not_valid() {
+        let raw_nenyr = "Construct Central {
+    Declare Imports([
+        Import('https://fonts.googleapis.com/css2?family=Matemasie&display=swap'),
+        Import('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap'),
+        Import('https://fonts.googleapis.com/css2?family=Bungee+Tint&display=swap'),
+        Import('../mocks/imports/another_external.css'),
+        Import('../mocks/imports/external_styles.css'),
+        Import('../mocks/imports/styles.css'),
+    ]),
+    Declare Typefaces({
+        roseMartin: '../mocks/typefaces/rosemartin.regular.otf',
+        regularEot: '../mocks/typefaces/showa-source-curry.regular-webfont.eot',
+        regularSvg: '../mocks/typefaces/showa-source-curry.regular-webfont.svg',
+        regularTtf: '../mocks/typefaces/showa-source-curry.regular-webfont.ttf',
+        regularWoff: '../mocks/typefaces/showa-source-curry.regular-webfont.woff',
+        regularWoff2: '../mocks/typefaces/showa-source-curry.regular-webfont.woff2'
+    }),
+    Declare Breakpoints({
+        MobileFirst({
+            onMobTablet: '780px',
+            onMobDesktop: '1240px',
+            onMobXl: '1440px',
+            onMobXXl: '2240px'
+        }),
+        DesktopFirst({
+            onDeskTablet: '780px',
+            onDeskDesktop: '1240px',
+            onDeskXl: '1440px',
+            onDeskXXl: '2240px'
+        })
+    }),
+    // Este é um comentário de linha.
+    Declare Themes({
+        Light({
+            Variables({
+                primaryColor: '#FFFFFF',
+                secondaryColor: '#CCCCCC',
+                accentColorVar: '#FF5733'
+            })
+        }),
+        Dark({
+            Variables({
+                primaryColor: '#333333',
+                secondaryColor: '#666666',
+                accentColorVar: '#FF5733'
+            })
+        })
+    }),
+    Declare Aliases({
+        bgd: background,
+        bgd: backgroundColor,
+        pdg: padding,
+        dp: display,
+        wd: width,
+        hgt: height
+    }),
+    Declare Variables({
+        myColor: '#FF6677',
+        grayColor: 'gray',
+        blueColor: 'blue',
+        redColor: 'red',
+        primaryColor: 'red',
+        primaryColor: 'yellow',
+        secondaryColor: 'white'
+    }),
+    Declare Animation('giddyRespond') {
+        Fraction(30, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Fraction(40, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction(4.0, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction([50, 70], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([5.0, 7.0], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([70, 80, 100], { // Este é um comentário de linha.
+            transform: 'translate(50%, 50%)'
+        })
+    },
+    Declare Animation('spiritedSavings') {
+        Progressive({
+            width: '${myVar}'
+        }),
+        Progressive({
+            border: '1px solid red',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Progressive({
+            backgroundColor: 'pink'
+        }),
+    },
+    /* Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    */
+    Declare Animation('grotesquePtarmigan') {
+        From({
+            width: '${myVar}'
+        }),
+        Halfway({
+            border: '1px solid red'
+        }),
+        To({
+            backgroundColor: 'pink',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        })
+    },
+    Declare Class('miniatureTrogon') Deriving('discreteAudio') 
+        Important(true),
+        Stylesheet({
+            backgroundColor: '${accentColorVar}',
+            backgroundColor: '#0000FF',
+            background: '#00FF00',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        Hover({
+            background: '${secondaryColor}',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    // Este é um comentário de linha.
+                    display: 'block', // Este é um comentário de linha.
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: '${secondaryColor}', // Este é um comentário de linha.
+                    pdg: '${m15px}'
+                })
+            })
+        })
+    },
+    Declare Class('myTestingClass') {
+        Stylesheet({
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        PanoramicViewer({
+            myBreakpoint({
+                Stylesheet({
+                    backgroundColor: 'blue',
+                    border: '10px solid red',
+                    height: '100px',
+                    width: '200px'
+                })
+            })
+        })
+    }
+}";
+        let mut parser = NenyrParser::new(raw_nenyr, "src/central.nyr");
+
+        assert_eq!(
+            format!("{:?}", parser.parse()),
+            "Err(NenyrError { suggestion: Some(\"Ensure that the `miniatureTrogon` class or deriving name declaration is followed by an opening curly bracket `{` to properly define the class block. The correct syntax is: `Declare Class('miniatureTrogon') { ... }` or `Declare Class('miniatureTrogon') Deriving('layoutName') { ... }`.\"), context_name: Some(\"Central\"), context_path: \"src/central.nyr\", error_message: \"An opening curly bracket `{` was expected after the `miniatureTrogon` class or deriving name declaration to start the class block, but it was not found. However, found `Important` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"    Declare Class('miniatureTrogon') Deriving('discreteAudio') \"), line_after: Some(\"        Stylesheet({\"), error_line: Some(\"        Important(true),\"), error_on_line: 129, error_on_col: 18, error_on_pos: 4164 } })".to_string()
+        );
+    }
+
+    #[test]
+    fn layout_context_is_valid() {
+        let raw_nenyr = "Construct Layout('hellishAdobe') {
+    // Este é um comentário de linha.
+    Declare Themes({
+        Light({
+            Variables({
+                primaryColor: '#FFFFFF',
+                secondaryColor: '#CCCCCC',
+                accentColorVar: '#FF5733'
+            })
+        }),
+        Dark({
+            Variables({
+                primaryColor: '#333333',
+                secondaryColor: '#666666',
+                accentColorVar: '#FF5733'
+            })
+        })
+    }),
+    Declare Aliases({
+        bgd: background,
+        bgd: backgroundColor,
+        pdg: padding,
+        dp: display,
+        wd: width,
+        hgt: height
+    }),
+    Declare Variables({
+        myColor: '#FF6677',
+        grayColor: 'gray',
+        blueColor: 'blue',
+        redColor: 'red',
+        primaryColor: 'red',
+        primaryColor: 'yellow',
+        secondaryColor: 'white'
+    }),
+    Declare Animation('giddyRespond') {
+        Fraction(30, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Fraction(40, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction(4.0, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction([50, 70], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([5.0, 7.0], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([70, 80, 100], { // Este é um comentário de linha.
+            transform: 'translate(50%, 50%)'
+        })
+    },
+    Declare Animation('spiritedSavings') {
+        Progressive({
+            width: '${myVar}'
+        }),
+        Progressive({
+            border: '1px solid red',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Progressive({
+            backgroundColor: 'pink'
+        }),
+    },
+    /* Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    */
+    Declare Animation('grotesquePtarmigan') {
+        From({
+            width: '${myVar}'
+        }),
+        Halfway({
+            border: '1px solid red'
+        }),
+        To({
+            backgroundColor: 'pink',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        })
+    },
+    Declare Class('miniatureTrogon') Deriving('discreteAudio') {
+        Important(true),
+        Stylesheet({
+            backgroundColor: '${accentColorVar}',
+            backgroundColor: '#0000FF',
+            background: '#00FF00',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        Hover({
+            background: '${secondaryColor}',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    // Este é um comentário de linha.
+                    display: 'block', // Este é um comentário de linha.
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: '${secondaryColor}', // Este é um comentário de linha.
+                    pdg: '${m15px}'
+                })
+            })
+        })
+    },
+    Declare Class('myTestingClass') {
+        Stylesheet({
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        PanoramicViewer({
+            myBreakpoint({
+                Stylesheet({
+                    backgroundColor: 'blue',
+                    border: '10px solid red',
+                    height: '100px',
+                    width: '200px'
+                })
+            })
+        })
+    }
+}
+";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        assert_eq!(
+            format!("{:?}", parser.parse()),
+            "Ok(LayoutContext(LayoutContext { layout_name: \"hellishAdobe\", aliases: Some(NenyrAliases { values: {\"bgd\": \"background-color\", \"pdg\": \"padding\", \"dp\": \"display\", \"wd\": \"width\", \"hgt\": \"height\"} }), variables: Some(NenyrVariables { values: {\"myColor\": \"#FF6677\", \"grayColor\": \"gray\", \"blueColor\": \"blue\", \"redColor\": \"red\", \"primaryColor\": \"yellow\", \"secondaryColor\": \"white\"} }), themes: Some(NenyrThemes { light_schema: Some(NenyrVariables { values: {\"primaryColor\": \"#FFFFFF\", \"secondaryColor\": \"#CCCCCC\", \"accentColorVar\": \"#FF5733\"} }), dark_schema: Some(NenyrVariables { values: {\"primaryColor\": \"#333333\", \"secondaryColor\": \"#666666\", \"accentColorVar\": \"#FF5733\"} }) }), animations: Some({\"giddyRespond\": NenyrAnimation { animation_name: \"giddyRespond\", kind: Some(Fraction), progressive_count: None, keyframe: [Fraction { stops: [30.0], properties: {\"bgd\": \"${accentColorVar}\", \"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"} }, Fraction { stops: [40.0], properties: {\"bgd\": \"${accentColorVar}\"} }, Fraction { stops: [4.0], properties: {\"bgd\": \"${accentColorVar}\"} }, Fraction { stops: [50.0, 70.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [5.0, 7.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [70.0, 80.0, 100.0], properties: {\"transform\": \"translate(50%, 50%)\"} }] }, \"spiritedSavings\": NenyrAnimation { animation_name: \"spiritedSavings\", kind: Some(Progressive), progressive_count: Some(3), keyframe: [Progressive({\"width\": \"${myVar}\"}), Progressive({\"border\": \"10px solid red\", \"background-color\": \"blue\", \"height\": \"100px\", \"width\": \"200px\"}), Progressive({\"background-color\": \"pink\"})] }, \"grotesquePtarmigan\": NenyrAnimation { animation_name: \"grotesquePtarmigan\", kind: Some(Transitive), progressive_count: None, keyframe: [From({\"width\": \"${myVar}\"}), Halfway({\"border\": \"1px solid red\"}), To({\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"})] }}), classes: Some({\"miniatureTrogon\": NenyrStyleClass { class_name: \"miniatureTrogon\", deriving_from: Some(\"discreteAudio\"), is_important: Some(true), style_patterns: Some({\"_stylesheet\": {\"background-color\": \"#0000FF\", \"background\": \"#00FF00\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}, \":hover\": {\"background\": \"${secondaryColor}\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}}), responsive_patterns: Some({\"onMobTablet\": {\"_stylesheet\": {\"display\": \"block\"}}, \"onDeskDesktop\": {\":hover\": {\"bgd\": \"${secondaryColor}\", \"pdg\": \"${m15px}\"}}}) }, \"myTestingClass\": NenyrStyleClass { class_name: \"myTestingClass\", deriving_from: None, is_important: None, style_patterns: Some({\"_stylesheet\": {\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"}}), responsive_patterns: Some({\"myBreakpoint\": {\"_stylesheet\": {\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"}}}) }}) }))".to_string()
+        );
+    }
+
+    #[test]
+    fn layout_context_is_not_valid() {
+        let raw_nenyr = "Construct Layout('hellishAdobe') {
+    // Este é um comentário de linha.
+    Declare Themes({
+        Light({
+            Variables({
+                primaryColor: '#FFFFFF',
+                secondaryColor: '#CCCCCC',
+                accentColorVar: '#FF5733'
+            })
+        }),
+        Dark({
+            Variables({
+                primaryColor: '#333333',
+                secondaryColor: '#666666',
+                accentColorVar: '#FF5733'
+            })
+        })
+    }),
+    Declare Aliases({
+        bgd: background,
+        bgd: backgroundColor,
+        pdg: padding,
+        dp: display,
+        wd: width,
+        hgt: height
+    }),
+    Declare Variables({
+        myColor: '#FF6677',
+        grayColor: 'gray',
+        blueColor: 'blue',
+        redColor: 'red',
+        primaryColor: 'red',
+        primaryColor: 'yellow',
+        secondaryColor: 'white'
+    }),
+    Declare Animation('giddyRespond') 
+        Fraction(30, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Fraction(40, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction(4.0, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction([50, 70], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([5.0, 7.0], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([70, 80, 100], { // Este é um comentário de linha.
+            transform: 'translate(50%, 50%)'
+        })
+    },
+    Declare Animation('spiritedSavings') {
+        Progressive({
+            width: '${myVar}'
+        }),
+        Progressive({
+            border: '1px solid red',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Progressive({
+            backgroundColor: 'pink'
+        }),
+    },
+    /* Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    */
+    Declare Animation('grotesquePtarmigan') {
+        From({
+            width: '${myVar}'
+        }),
+        Halfway({
+            border: '1px solid red'
+        }),
+        To({
+            backgroundColor: 'pink',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        })
+    },
+    Declare Class('miniatureTrogon') Deriving('discreteAudio') {
+        Important(true),
+        Stylesheet({
+            backgroundColor: '${accentColorVar}',
+            backgroundColor: '#0000FF',
+            background: '#00FF00',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        Hover({
+            background: '${secondaryColor}',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    // Este é um comentário de linha.
+                    display: 'block', // Este é um comentário de linha.
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: '${secondaryColor}', // Este é um comentário de linha.
+                    pdg: '${m15px}'
+                })
+            })
+        })
+    },
+    Declare Class('myTestingClass') {
+        Stylesheet({
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        PanoramicViewer({
+            myBreakpoint({
+                Stylesheet({
+                    backgroundColor: 'blue',
+                    border: '10px solid red',
+                    height: '100px',
+                    width: '200px'
+                })
+            })
+        })
+    }
+}
+";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        assert_eq!(
+            format!("{:?}", parser.parse()),
+            "Err(NenyrError { suggestion: Some(\"Ensure that the `giddyRespond` animation name declaration is followed by an opening curly bracket `{` to properly define the animation block. The correct syntax is: `Declare Animation('giddyRespond') { ... }`.\"), context_name: Some(\"hellishAdobe\"), context_path: \"\", error_message: \"An opening curly bracket `{` was expected after the `giddyRespond` animation name declaration to start the animation block, but it was not found. However, found `Fraction` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"    Declare Animation('giddyRespond') \"), line_after: Some(\"            // Este é um comentário de linha.\"), error_line: Some(\"        Fraction(30, {\"), error_on_line: 37, error_on_col: 17, error_on_pos: 942 } })".to_string()
+        );
+    }
+
+    #[test]
+    fn module_context_is_valid() {
+        let raw_nenyr = "Construct Module('ultimateFeel') Extending('hellishAdobe') {
+    Declare Aliases({
+        bgd: background,
+        bgd: backgroundColor,
+        pdg: padding,
+        dp: display,
+        wd: width,
+        hgt: height
+    }),
+    Declare Variables({
+        myColor: '#FF6677',
+        grayColor: 'gray',
+        blueColor: 'blue',
+        redColor: 'red',
+        primaryColor: 'red',
+        primaryColor: 'yellow',
+        secondaryColor: 'white'
+    }),
+    Declare Animation('giddyRespond') {
+        Fraction(30, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Fraction(40, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction(4.0, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction([50, 70], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([5.0, 7.0], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([70, 80, 100], { // Este é um comentário de linha.
+            transform: 'translate(50%, 50%)'
+        })
+    },
+    Declare Animation('spiritedSavings') {
+        Progressive({
+            width: '${myVar}'
+        }),
+        Progressive({
+            border: '1px solid red',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Progressive({
+            backgroundColor: 'pink'
+        }),
+    },
+    /* Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    */
+    Declare Animation('grotesquePtarmigan') {
+        From({
+            width: '${myVar}'
+        }),
+        Halfway({
+            border: '1px solid red'
+        }),
+        To({
+            backgroundColor: 'pink',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        })
+    },
+    Declare Class('miniatureTrogon') Deriving('discreteAudio') {
+        Important(true),
+        Stylesheet({
+            backgroundColor: '${accentColorVar}',
+            backgroundColor: '#0000FF',
+            background: '#00FF00',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        Hover({
+            background: '${secondaryColor}',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    // Este é um comentário de linha.
+                    display: 'block', // Este é um comentário de linha.
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: '${secondaryColor}', // Este é um comentário de linha.
+                    pdg: '${m15px}'
+                })
+            })
+        })
+    },
+    Declare Class('myTestingClass') {
+        Stylesheet({
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        PanoramicViewer({
+            myBreakpoint({
+                Stylesheet({
+                    backgroundColor: 'blue',
+                    border: '10px solid red',
+                    height: '100px',
+                    width: '200px'
+                })
+            })
+        })
+    }
+}
+";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        assert_eq!(
+            format!("{:?}", parser.parse()),
+            "Ok(ModuleContext(ModuleContext { module_name: \"ultimateFeel\", extending_from: Some(\"hellishAdobe\"), aliases: Some(NenyrAliases { values: {\"bgd\": \"background-color\", \"pdg\": \"padding\", \"dp\": \"display\", \"wd\": \"width\", \"hgt\": \"height\"} }), variables: Some(NenyrVariables { values: {\"myColor\": \"#FF6677\", \"grayColor\": \"gray\", \"blueColor\": \"blue\", \"redColor\": \"red\", \"primaryColor\": \"yellow\", \"secondaryColor\": \"white\"} }), animations: Some({\"giddyRespond\": NenyrAnimation { animation_name: \"giddyRespond\", kind: Some(Fraction), progressive_count: None, keyframe: [Fraction { stops: [30.0], properties: {\"bgd\": \"${accentColorVar}\", \"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"} }, Fraction { stops: [40.0], properties: {\"bgd\": \"${accentColorVar}\"} }, Fraction { stops: [4.0], properties: {\"bgd\": \"${accentColorVar}\"} }, Fraction { stops: [50.0, 70.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [5.0, 7.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [70.0, 80.0, 100.0], properties: {\"transform\": \"translate(50%, 50%)\"} }] }, \"spiritedSavings\": NenyrAnimation { animation_name: \"spiritedSavings\", kind: Some(Progressive), progressive_count: Some(3), keyframe: [Progressive({\"width\": \"${myVar}\"}), Progressive({\"border\": \"10px solid red\", \"background-color\": \"blue\", \"height\": \"100px\", \"width\": \"200px\"}), Progressive({\"background-color\": \"pink\"})] }, \"grotesquePtarmigan\": NenyrAnimation { animation_name: \"grotesquePtarmigan\", kind: Some(Transitive), progressive_count: None, keyframe: [From({\"width\": \"${myVar}\"}), Halfway({\"border\": \"1px solid red\"}), To({\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"})] }}), classes: Some({\"miniatureTrogon\": NenyrStyleClass { class_name: \"miniatureTrogon\", deriving_from: Some(\"discreteAudio\"), is_important: Some(true), style_patterns: Some({\"_stylesheet\": {\"background-color\": \"#0000FF\", \"background\": \"#00FF00\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}, \":hover\": {\"background\": \"${secondaryColor}\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}}), responsive_patterns: Some({\"onMobTablet\": {\"_stylesheet\": {\"display\": \"block\"}}, \"onDeskDesktop\": {\":hover\": {\"bgd\": \"${secondaryColor}\", \"pdg\": \"${m15px}\"}}}) }, \"myTestingClass\": NenyrStyleClass { class_name: \"myTestingClass\", deriving_from: None, is_important: None, style_patterns: Some({\"_stylesheet\": {\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"}}), responsive_patterns: Some({\"myBreakpoint\": {\"_stylesheet\": {\"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"}}}) }}) }))".to_string()
+        );
+    }
+
+    #[test]
+    fn module_context_is_not_valid() {
+        let raw_nenyr = "Construct Module('ultimateFeel') Extending('hellishAdobe') {
+    Declare Aliases({
+        bgd: background,
+        bgd: backgroundColor,
+        pdg: padding,
+        dp: display,
+        wd: width,
+        hgt: height
+    }),
+    Declare Variables(
+        myColor: '#FF6677',
+        grayColor: 'gray',
+        blueColor: 'blue',
+        redColor: 'red',
+        primaryColor: 'red',
+        primaryColor: 'yellow',
+        secondaryColor: 'white'
+    }),
+    Declare Animation('giddyRespond') {
+        Fraction(30, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Fraction(40, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction(4.0, {
+            // Este é um comentário de linha.
+            bgd: '${accentColorVar}',
+        }),
+        Fraction([50, 70], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([5.0, 7.0], { // Este é um comentário de linha.
+            backgroundColor: 'blue'
+        }),
+        Fraction([70, 80, 100], { // Este é um comentário de linha.
+            transform: 'translate(50%, 50%)'
+        })
+    },
+    Declare Animation('spiritedSavings') {
+        Progressive({
+            width: '${myVar}'
+        }),
+        Progressive({
+            border: '1px solid red',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        Progressive({
+            backgroundColor: 'pink'
+        }),
+    },
+    /* Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    - Este é um commentário de bloco
+    */
+    Declare Animation('grotesquePtarmigan') {
+        From({
+            width: '${myVar}'
+        }),
+        Halfway({
+            border: '1px solid red'
+        }),
+        To({
+            backgroundColor: 'pink',
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        })
+    },
+    Declare Class('miniatureTrogon') Deriving('discreteAudio') {
+        Important(true),
+        Stylesheet({
+            backgroundColor: '${accentColorVar}',
+            backgroundColor: '#0000FF',
+            background: '#00FF00',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        Hover({
+            background: '${secondaryColor}',
+            padding: '${m15px21}',
+            bdr: '5px'
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    // Este é um comentário de linha.
+                    display: 'block', // Este é um comentário de linha.
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: '${secondaryColor}', // Este é um comentário de linha.
+                    pdg: '${m15px}'
+                })
+            })
+        })
+    },
+    Declare Class('myTestingClass') {
+        Stylesheet({
+            backgroundColor: 'blue',
+            border: '10px solid red',
+            height: '100px',
+            width: '200px'
+        }),
+        PanoramicViewer({
+            myBreakpoint({
+                Stylesheet({
+                    backgroundColor: 'blue',
+                    border: '10px solid red',
+                    height: '100px',
+                    width: '200px'
+                })
+            })
+        })
+    }
+}
+";
+        let mut parser = NenyrParser::new(raw_nenyr, "");
+
+        assert_eq!(
+            format!("{:?}", parser.parse()),
+            "Err(NenyrError { suggestion: Some(\"After the opening parenthesis, an opening curly bracket `{` is required to properly define the properties block in the `Variables` declaration. Ensure the pattern follows correct Nenyr syntax, like `Variables({ key: 'value', ... })`.\"), context_name: Some(\"ultimateFeel\"), context_path: \"\", error_message: \"The `Variables` declaration block was expected to receive an object as a value, but an opening curly bracket `{` was not found after the opening parenthesis. However, found `myColor` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"    Declare Variables(\"), line_after: Some(\"        grayColor: 'gray',\"), error_line: Some(\"        myColor: '#FF6677',\"), error_on_line: 11, error_on_col: 16, error_on_pos: 266 } })".to_string()
+        );
+    }
+}

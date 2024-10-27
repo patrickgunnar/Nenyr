@@ -1,0 +1,1039 @@
+Construct Layout("dynamicLayout") {
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Themes({
+        Light({
+            Variables({
+                primaryColor: "#FFFFFF",
+                secondaryColor: "#F0F0F0",
+                accentColorVar: "#3498DB",
+                bgColor: "#FAFAFA",
+                bdrColor: "#DDDDDD",
+                textColor: "#333333",
+                textSecondaryColor: "#666666",
+                highlightColor: "#FFDD57",
+                shadowColor: "rgba(0, 0, 0, 0.1)"
+            })
+        }),
+        Dark({
+            Variables({
+                primaryColor: "#1E1E1E",
+                secondaryColor: "#333333",
+                accentColorVar: "#FF4500",
+                bgColor: "#121212",
+                bdrColor: "#444444",
+                textColor: "#F0F0F0",
+                textSecondaryColor: "#AAAAAA",
+                highlightColor: "#FF8C00",
+                shadowColor: "rgba(0, 0, 0, 0.4)"
+            })
+        })
+    }),
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Aliases({
+        // Background and Borders
+        bgd: background,
+        bgdColor: backgroundColor,
+        bgdImg: backgroundImage,
+        bgdSize: backgroundSize,
+        bd: border,
+        bdT: borderTop,
+        bdB: borderBottom,
+        bdL: borderLeft,
+        bdR: borderRight,
+        bdColor: borderColor,
+        bdRadius: borderRadius,
+        boxShdw: boxShadow,
+
+        // Display and Layout
+        dp: display,
+        pos: position,
+        flt: float,
+        ovf: overflow,
+        ovfX: overflowX,
+        ovfY: overflowY,
+        zIdx: zIndex,
+        flexDir: flexDirection,
+        flexWrp: flexWrap,
+        algnItems: alignItems,
+        justifyCnt: justifyContent,
+        gridTpl: gridTemplate,
+
+        // Sizing
+        wd: width,
+        hgt: height,
+        maxWd: maxWidth,
+        minWd: minWidth,
+        maxHgt: maxHeight,
+        minHgt: minHeight,
+
+        // Spacing
+        mg: margin,
+        mgT: marginTop,
+        mgB: marginBottom,
+        mgL: marginLeft,
+        mgR: marginRight,
+        pdg: padding,
+        pdgT: paddingTop,
+        pdgB: paddingBottom,
+        pdgL: paddingLeft,
+        pdgR: paddingRight,
+        gp: gap,
+
+        // Typography
+        fntSize: fontSize,
+        fntWeight: fontWeight,
+        fntFam: fontFamily,
+        txtAlign: textAlign,
+        txtDec: textDecoration,
+        txtTrnsf: textTransform,
+        lineHgt: lineHeight,
+        letterSpc: letterSpacing,
+        wordSpc: wordSpacing,
+        clr: color,
+
+        // Other Adjustments
+        opcty: opacity,
+        trnsfrm: transform,
+        trnsfrmOrgn: transformOrigin,
+        trnstn: transition,
+        trnstnDur: transitionDuration,
+        crsr: cursor,
+        vis: visibility,
+        fltShdw: filter
+    }),
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Variables({
+        myColor: "#FF6677",
+        grayColor: "gray",
+        blueColor: "blue",
+        redColor: "red",
+        primaryColor: "yellow",
+        secondaryColor: "white",
+        accColor: "#FF5733",
+        darkGrayColor: "#333333",
+        lightGrayColor: "#D3D3D3",
+        bgdColor: "#FAFAFA",
+        borColor: "#CCCCCC",
+        highlightColor: "#FFD700",
+        shadowColor: "rgba(0, 0, 0, 0.2)",
+        linkColor: "#1E90FF",
+        successColor: "#4CAF50",
+        warningColor: "#FFA500",
+        dangerColor: "#DC143C"
+    }),
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("slideScale") {
+        Fraction(20, {
+            transform: "translateX(10%) scale(1.1)"
+        }),
+        Fraction([40, 60], {
+            transform: "translateX(30%) scale(1.2)"
+        }),
+        Fraction(80, {
+            transform: "translateX(50%) scale(0.9)"
+        }),
+        Fraction(100, {
+            transform: "translateX(0) scale(1)"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("fadeColorChange") {
+        Fraction(10, {
+            opacity: "0.1",
+            backgroundColor: "${primaryColorVar}"
+        }),
+        Fraction([30, 60], {
+            opacity: "0.5",
+            backgroundColor: "green"
+        }),
+        Fraction(90, {
+            opacity: "1",
+            backgroundColor: "${secondaryColorVar}"
+        }),
+        Fraction(100, {
+            opacity: "0.8",
+            backgroundColor: "purple"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("rotateScale") {
+        Fraction(25, {
+            transform: "rotate(15deg) scale(1.05)"
+        }),
+        Fraction([50, 75], {
+            transform: "rotate(30deg) scale(0.95)"
+        }),
+        Fraction(90, {
+            transform: "rotate(45deg) scale(1.15)"
+        }),
+        Fraction(100, {
+            transform: "rotate(0deg) scale(1)"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("borderFlash") {
+        Fraction(10, {
+            borderColor: "${accentColorVar}",
+            borderWidth: "1px"
+        }),
+        Fraction([30, 50, 70], {
+            borderColor: "red",
+            borderWidth: "3px"
+        }),
+        Fraction(90, {
+            borderColor: "green",
+            borderWidth: "2px"
+        }),
+        Fraction(100, {
+            borderColor: "${accentColorVar}",
+            borderWidth: "1px"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("bounceOpacity") {
+        Fraction(15, {
+            transform: "translateY(-20%)",
+            opacity: "0.3"
+        }),
+        Fraction([45, 65], {
+            transform: "translateY(0)",
+            opacity: "1"
+        }),
+        Fraction(85, {
+            transform: "translateY(20%)",
+            opacity: "0.7"
+        }),
+        Fraction(100, {
+            transform: "translateY(0)",
+            opacity: "1"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("floatScaleOpacity") {
+        Fraction(10.5, {
+            transform: "scale(0.8)",
+            opacity: "0.5"
+        }),
+        Fraction([25.5, 50.75], {
+            transform: "scale(1.2)",
+            opacity: "0.8"
+        }),
+        Fraction(75.25, {
+            transform: "scale(1.05)",
+            opacity: "1"
+        }),
+        Fraction(100.0, {
+            transform: "scale(1)",
+            opacity: "0.9"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("smoothColorFade") {
+        Fraction(5.5, {
+            backgroundColor: "${highlightColorVar}",
+            opacity: "0.2"
+        }),
+        Fraction([30.25, 60.5], {
+            backgroundColor: "lightblue",
+            opacity: "0.6"
+        }),
+        Fraction(85.75, {
+            backgroundColor: "lightcoral",
+            opacity: "0.9"
+        }),
+        Fraction(100.0, {
+            backgroundColor: "${backgroundColorVar}",
+            opacity: "1"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("complexRotateScale") {
+        Fraction(15.5, {
+            transform: "rotate(12.5deg) scale(0.95)"
+        }),
+        Fraction([40.25, 65.75], {
+            transform: "rotate(25.5deg) scale(1.1)"
+        }),
+        Fraction(85.5, {
+            transform: "rotate(37.5deg) scale(0.8)"
+        }),
+        Fraction(100.0, {
+            transform: "rotate(0deg) scale(1)"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("floatMoveOpacity") {
+        Fraction(8.5, {
+            transform: "translateY(-10.5%)",
+            opacity: "0.3"
+        }),
+        Fraction([35.5, 55.25], {
+            transform: "translateY(0)",
+            opacity: "1"
+        }),
+        Fraction(78.75, {
+            transform: "translateY(15.75%)",
+            opacity: "0.7"
+        }),
+        Fraction(100.0, {
+            transform: "translateY(0)",
+            opacity: "1"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("floatBorderFlash") {
+        Fraction(12.5, {
+            borderColor: "${accentColorVar}",
+            borderWidth: "1px"
+        }),
+        Fraction([35.75, 58.5, 78.25], {
+            borderColor: "orange",
+            borderWidth: "3px"
+        }),
+        Fraction(90.5, {
+            borderColor: "teal",
+            borderWidth: "2px"
+        }),
+        Fraction(100.0, {
+            borderColor: "${accentColorVar}",
+            borderWidth: "1px"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("horizontalMove") {
+        Progressive({
+            transform: "translateX(0)",
+            backgroundColor: "lightgray"
+        }),
+        Progressive({
+            transform: "translateX(50px)",
+            backgroundColor: "lightblue"
+        }),
+        Progressive({
+            transform: "translateX(100px)",
+            backgroundColor: "lightgreen"
+        }),
+        Progressive({
+            transform: "translateX(150px)",
+            backgroundColor: "lightcoral"
+        }),
+        Progressive({
+            transform: "translateX(200px)",
+            backgroundColor: "lightgoldenrodyellow"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("fadeScale") {
+        Progressive({
+            opacity: "0.2",
+            transform: "scale(0.8)"
+        }),
+        Progressive({
+            opacity: "0.5",
+            transform: "scale(1)"
+        }),
+        Progressive({
+            opacity: "0.8",
+            transform: "scale(1.2)"
+        }),
+        Progressive({
+            opacity: "1",
+            transform: "scale(1.1)"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("colorBorderSize") {
+        Progressive({
+            backgroundColor: "lavender",
+            border: "2px solid ${primaryColorVar}",
+            height: "50px",
+            width: "50px"
+        }),
+        Progressive({
+            backgroundColor: "lightpink",
+            border: "4px solid ${secondaryColorVar}",
+            height: "75px",
+            width: "75px"
+        }),
+        Progressive({
+            backgroundColor: "lightyellow",
+            border: "6px solid ${accentColorVar}",
+            height: "100px",
+            width: "100px"
+        }),
+        Progressive({
+            backgroundColor: "lightgreen",
+            border: "8px solid teal",
+            height: "125px",
+            width: "125px"
+        }),
+        Progressive({
+            backgroundColor: "lightblue",
+            border: "10px solid navy",
+            height: "150px",
+            width: "150px"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("rotateColorChange") {
+        Progressive({
+            transform: "rotate(0deg)",
+            backgroundColor: "white"
+        }),
+        Progressive({
+            transform: "rotate(45deg)",
+            backgroundColor: "lightgray"
+        }),
+        Progressive({
+            transform: "rotate(90deg)",
+            backgroundColor: "lightblue"
+        }),
+        Progressive({
+            transform: "rotate(135deg)",
+            backgroundColor: "lightgreen"
+        }),
+        Progressive({
+            transform: "rotate(180deg)",
+            backgroundColor: "lavender"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("verticalBounce") {
+        Progressive({
+            transform: "translateY(0)",
+            border: "2px dashed ${highlightColorVar}"
+        }),
+        Progressive({
+            transform: "translateY(-20px)",
+            border: "2px solid orange"
+        }),
+        Progressive({
+            transform: "translateY(0)",
+            border: "3px solid ${highlightColorVar}"
+        }),
+        Progressive({
+            transform: "translateY(20px)",
+            border: "4px dotted teal"
+        }),
+        Progressive({
+            transform: "translateY(0)",
+            border: "2px dashed ${highlightColorVar}"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("fadeAndScale") {
+        From({
+            opacity: "0",
+            transform: "scale(0.5)"
+        }),
+        Halfway({
+            opacity: "0.5",
+            transform: "scale(1)"
+        }),
+        To({
+            opacity: "1",
+            transform: "scale(1.2)"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("colorAndBorderChange") {
+        From({
+            backgroundColor: "lightgray",
+            border: "2px solid ${accentColorVar}"
+        }),
+        Halfway({
+            backgroundColor: "lightblue",
+            border: "4px solid ${highlightColorVar}"
+        }),
+        To({
+            backgroundColor: "lightgreen",
+            border: "6px solid teal"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("verticalMoveAndRotate") {
+        From({
+            transform: "translateY(0) rotate(0deg)"
+        }),
+        Halfway({
+            transform: "translateY(-20px) rotate(45deg)"
+        }),
+        To({
+            transform: "translateY(0) rotate(90deg)"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("textFadeAndColorChange") {
+        From({
+            color: "${primaryTextColorVar}",
+            opacity: "0.2"
+        }),
+        Halfway({
+            color: "${secondaryTextColorVar}",
+            opacity: "0.6"
+        }),
+        To({
+            color: "darkblue",
+            opacity: "1"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("expandWidthHeight") {
+        From({
+            width: "50px",
+            height: "50px"
+        }),
+        Halfway({
+            width: "100px",
+            height: "100px"
+        }),
+        To({
+            width: "150px",
+            height: "150px"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("borderColorChange") {
+        From({
+            border: "2px dashed ${myColorVar}",
+            backgroundColor: "lightyellow"
+        }),
+        Halfway({
+            border: "4px dotted ${secondaryColorVar}",
+            backgroundColor: "lightpink"
+        }),
+        To({
+            border: "6px solid ${highlightColorVar}",
+            backgroundColor: "lavender"
+        })
+    },
+    /**
+    * Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    * sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    * Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    * ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    * in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    * occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    */
+    Declare Animation("translateAndScale") {
+        From({
+            transform: "translateX(0) scale(1)"
+        }),
+        Halfway({
+            transform: "translateX(50px) scale(1.5)"
+        }),
+        To({
+            transform: "translateX(100px) scale(1)"
+        })
+    },
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Class("celestialHeron") Deriving("stardustFeather") {
+        Important(true),
+        Stylesheet({
+            bgdColor: "${primaryColor}",
+            clr: "${accColor}",
+            pdg: "${m20px30}",
+            dp: "flex",
+            alignItems: "center"
+        }),
+        Hover({
+            clr: "${secondaryColor}",
+            bd: "2px solid ${primaryColor}"
+        }),
+        After({
+            content: "' '",
+            dp: "block",
+            wd: "100%",
+            hgt: "2px",
+            bgd: "${secondaryColor}"
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    dp: "block",
+                    flexDir: "column",
+                    pdg: "${m8px12}"
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    bgd: "${secondaryColor}",
+                    pdg: "${m15px}"
+                })
+            })
+        })
+    },
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Class("ancientPhoenix") Deriving("fieryAura") {
+        Stylesheet({
+            bgdColor: "${accColor}",
+            clr: "${primaryColor}",
+            fntSize: "1.2em",
+            pdg: "${m12px18}",
+            txtAlign: "center",
+            bdRadius: "8px"
+        }),
+        Hover({
+            bgd: "${primaryColor}",
+            clr: "${secondaryColor}",
+            boxShdw: "0 4px 8px ${shadowColor}"
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    wd: "100%",
+                    pdg: "${m8px12}",
+                    fntSize: "1em"
+                })
+            }),
+            onDeskDesktop({
+                After({
+                    content: "'🔥'",
+                    pos: "absolute",
+                    right: "5px",
+                    top: "5px"
+                })
+            })
+        })
+    },
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Class("emeraldRaven") Deriving("mysticShroud") {
+        Important(true),
+        Stylesheet({
+            bgd: "${secondaryColor}",
+            bd: "3px solid ${primaryColor}",
+            bdRadius: "10px",
+            pdg: "${m20px30}",
+            textShadow: "1px 1px 2px ${accColor}"
+        }),
+        Hover({
+            bgdColor: "${primaryColor}",
+            clr: "${accColor}",
+            boxShdw: "0 6px 12px ${shadowColor}"
+        }),
+        Before({
+            content: "' '",
+            dp: "block",
+            wd: "100%",
+            hgt: "4px",
+            bgd: "${accColor}"
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    pdg: "${m15px20}",
+                    fntSize: "0.9em",
+                    bdRadius: "5px"
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    clr: "${secondaryColor}",
+                    bgd: "${accColor}"
+                })
+                /*After({
+                    content: "' '",
+                    dp: "block",
+                    wd: "50%",
+                    hgt: "2px",
+                    bgd: "${primaryColor}",
+                    mgT: "10px",
+                    mgB: "0"
+                })*/
+            })
+        })
+    },
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Class("nebulousLion") Deriving("stellarMane") {
+        Stylesheet({
+            bgd: "${secondaryColor}",
+            pdg: "${m12px20}",
+            clr: "${primaryColor}",
+            fntWeight: "bold",
+            letterSpc: "0.1em",
+            bd: "1px solid ${accColor}"
+        }),
+        Hover({
+            bgd: "${accColor}",
+            clr: "${primaryColor}",
+            boxShdw: "0 6px 12px ${shadowColor}"
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    pdg: "${m10px16}",
+                    fntSize: "1em"
+                })
+            }),
+            onDeskDesktop({
+                Stylesheet({
+                    pdg: "${m15px25}",
+                    fntSize: "1.1em"
+                })
+                /*After({
+                    content: "'✨'",
+                    pos: "absolute",
+                    top: "10px",
+                    left: "10px",
+                    fntSize: "1.5em"
+                })*/
+            })
+        })
+    },
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Class("luminousDragon") Deriving("radiantWings") {
+        Important(true),
+        Stylesheet({
+            backgroundColor: "${primaryColor}",
+            color: "${accColor}",
+            padding: "${m20px30}",
+            display: "flex",
+            alignItems: "center"
+        }),
+        Hover({
+            color: "${secondaryColor}",
+            border: "2px solid ${primaryColor}"
+        }),
+        After({
+            content: "''",
+            display: "block",
+            width: "100%",
+            height: "2px",
+            background: "${secondaryColor}"
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    display: "block",
+                    flexDirection: "column",
+                    padding: "${m8px12}"
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    background: "${secondaryColor}",
+                    padding: "${m15px}"
+                })
+            })
+        })
+    },
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Class("ancientGuardian") Deriving("fieryEmber") {
+        Stylesheet({
+            backgroundColor: "${accColor}",
+            color: "${primaryColor}",
+            fontSize: "1.2em",
+            padding: "${m12px18}",
+            textAlign: "center",
+            borderRadius: "8px"
+        }),
+        Hover({
+            background: "${primaryColor}",
+            color: "${secondaryColor}",
+            boxShadow: "0 4px 8px ${shadowColor}"
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    width: "100%",
+                    padding: "${m8px12}",
+                    fontSize: "1em"
+                })
+            }),
+            onDeskDesktop({
+                After({
+                    content: "'🔥'",
+                    position: "absolute",
+                    right: "5px",
+                    top: "5px"
+                })
+            })
+        })
+    },
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Class("mysticalPhoenix") Deriving("fieryWings") {
+        Important(true),
+        Stylesheet({
+            background: "${secondaryColor}",
+            border: "3px solid ${primaryColor}",
+            borderRadius: "10px",
+            padding: "${m20px30}",
+            textShadow: "1px 1px 2px ${accColor}"
+        }),
+        Hover({
+            backgroundColor: "${primaryColor}",
+            color: "${accColor}",
+            boxShadow: "0 6px 12px ${shadowColor}"
+        }),
+        Before({
+            content: "''",
+            display: "block",
+            width: "100%",
+            height: "4px",
+            background: "${accColor}"
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    padding: "${m15px20}",
+                    fontSize: "0.9em",
+                    borderRadius: "5px"
+                })
+            }),
+            onDeskDesktop({
+                Hover({
+                    color: "${secondaryColor}",
+                    background: "${accColor}"
+                })
+                /*After({
+                    content: "''",
+                    display: "block",
+                    width: "50%",
+                    height: "2px",
+                    background: "${primaryColor}",
+                    marginTop: "10px",
+                    marginBottom: "0"
+                })*/
+            })
+        })
+    },
+    // Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    // sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    // Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+    // ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    // in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+    // occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Declare Class("celestialLion") Deriving("stellarPride") {
+        Stylesheet({
+            background: "${secondaryColor}",
+            padding: "${m12px20}",
+            color: "${primaryColor}",
+            fontWeight: "bold",
+            letterSpacing: "0.1em",
+            border: "1px solid ${accColor}"
+        }),
+        Hover({
+            background: "${accColor}",
+            color: "${primaryColor}",
+            boxShadow: "0 6px 12px ${shadowColor}"
+        }),
+        PanoramicViewer({
+            onMobTablet({
+                Stylesheet({
+                    padding: "${m10px16}",
+                    fontSize: "1em"
+                })
+            }),
+            onDeskDesktop({
+                Stylesheet({
+                    padding: "${m15px25}",
+                    fontSize: "1.1em"
+                })
+                /*After({
+                    content: "'✨'",
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                    fontSize: "1.5em"
+                })*/
+            })
+        })
+    },
+}
