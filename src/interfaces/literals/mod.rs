@@ -161,16 +161,13 @@ impl<'a> NenyrParser<'a> {
         with_next_move: bool,
     ) -> NenyrResult<String> {
         if let NenyrTokens::Identifier(val) = self.current_token.clone() {
-            // Ensure the identifier is not empty
-            if !val.is_empty() {
-                // Move to the next token if requested
-                if with_next_move {
-                    self.process_next_token()?;
-                }
-
-                // Return the valid identifier literal
-                return Ok(val);
+            // Move to the next token if requested
+            if with_next_move {
+                self.process_next_token()?;
             }
+
+            // Return the valid identifier literal
+            return Ok(val);
         }
 
         // Return an error if the identifier literal is missing or invalid

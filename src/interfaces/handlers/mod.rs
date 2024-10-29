@@ -82,6 +82,8 @@ impl<'a> NenyrParser<'a> {
             NenyrTokens::SquareBracketClose => "]",
             NenyrTokens::Colon => ":",
             NenyrTokens::Identifier(val) => &val.to_owned(),
+            NenyrTokens::StringLiteral(val) => &val.to_owned(),
+            NenyrTokens::Number(num) => &num.to_string(),
             other => &format!("{:?}", other),
         };
 

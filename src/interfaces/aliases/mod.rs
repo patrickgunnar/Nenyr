@@ -4,7 +4,6 @@ use crate::{
     loop_while_not,
     tokens::NenyrTokens,
     types::aliases::NenyrAliases,
-    validators::identifier::NenyrIdentifierValidator,
     NenyrParser, NenyrResult,
 };
 
@@ -106,17 +105,6 @@ impl<'a> NenyrParser<'a> {
         self.processing_state.set_block_active(true);
 
         if let NenyrTokens::Identifier(identifier) = self.current_token.clone() {
-            if !self.is_valid_identifier(&identifier) {
-                return Err(NenyrError::new(
-                    Some("A valid alias name should contain only alphanumeric characters, with the first character being an alphabetic letter. Examples: 'myAlias1', 'aliasName123', etc.".to_string()),
-                    self.context_name.clone(),
-                    self.context_path.to_string(),
-                    self.add_nenyr_token_to_error("The validation of the alias name failed. The provided name does not meet the required format."),
-                    NenyrErrorKind::SyntaxError,
-                    self.get_tracing(),
-                ));
-            }
-
             return self.process_alias_value(identifier, aliases);
         }
 

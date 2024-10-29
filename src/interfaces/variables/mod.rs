@@ -3,9 +3,7 @@ use crate::{
     loop_while_not,
     tokens::NenyrTokens,
     types::variables::NenyrVariables,
-    validators::{
-        identifier::NenyrIdentifierValidator, variable_value::NenyrVariableValueValidator,
-    },
+    validators::variable_value::NenyrVariableValueValidator,
     NenyrParser, NenyrResult,
 };
 
@@ -163,23 +161,6 @@ impl<'a> NenyrParser<'a> {
         self.processing_state.set_block_active(true);
 
         if let NenyrTokens::Identifier(identifier) = self.current_token.clone() {
-            if !self.is_valid_identifier(&identifier) {
-                let error_message = if is_from_themes {
-                    "In the `Themes` block, the validation of the variable name failed. The provided name does not meet the required format."
-                } else {
-                    "The validation of the variable name failed. The provided name does not meet the required format."
-                };
-
-                return Err(NenyrError::new(
-                    Some("A valid variable name should contain only alphanumeric characters, with the first character being an alphabetic letter. Examples: 'myVariable1', 'variableName123', etc.".to_string()),
-                    self.context_name.clone(),
-                    self.context_path.to_string(),
-                    self.add_nenyr_token_to_error(error_message),
-                    NenyrErrorKind::SyntaxError,
-                    self.get_tracing(),
-                ));
-            }
-
             return self.process_variable_value(is_from_themes, identifier, variables);
         }
 

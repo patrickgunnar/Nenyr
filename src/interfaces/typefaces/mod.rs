@@ -3,7 +3,7 @@ use crate::{
     loop_while_not,
     tokens::NenyrTokens,
     types::typefaces::NenyrTypefaces,
-    validators::{identifier::NenyrIdentifierValidator, typeface::NenyrTypefaceValidator},
+    validators::typeface::NenyrTypefaceValidator,
     NenyrParser, NenyrResult,
 };
 
@@ -94,17 +94,6 @@ impl<'a> NenyrParser<'a> {
         self.processing_state.set_block_active(true);
 
         if let NenyrTokens::Identifier(identifier) = self.current_token.clone() {
-            if !self.is_valid_identifier(&identifier) {
-                return Err(NenyrError::new(
-                    Some("A valid typeface name should contain only alphanumeric characters, with the first character being an alphabetic letter. Examples: 'myTypeface1', 'typefaceName123', etc.".to_string()),
-                    self.context_name.clone(),
-                    self.context_path.to_string(),
-                    self.add_nenyr_token_to_error("The validation of the typeface name failed. The provided name does not meet the required format."),
-                    NenyrErrorKind::SyntaxError,
-                    self.get_tracing(),
-                ));
-            }
-
             return self.process_typeface_value(identifier, typefaces);
         }
 
