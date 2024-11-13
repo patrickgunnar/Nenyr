@@ -99,6 +99,30 @@ impl NenyrErrorTracing {
             error_on_pos,
         }
     }
+
+    pub fn get_line_before_error(&self) -> Option<String> {
+        self.line_before.clone()
+    }
+
+    pub fn get_line_after_error(&self) -> Option<String> {
+        self.line_after.clone()
+    }
+
+    pub fn get_error_line(&self) -> Option<String> {
+        self.error_line.clone()
+    }
+
+    pub fn get_line(&self) -> usize {
+        self.error_on_line.clone()
+    }
+
+    pub fn get_position(&self) -> usize {
+        self.error_on_pos.clone()
+    }
+
+    pub fn get_column(&self) -> usize {
+        self.error_on_col.clone()
+    }
 }
 
 /// `NenyrError` is a structure that encapsulates detailed information about errors
@@ -182,6 +206,50 @@ impl NenyrError {
             error_kind,
             error_tracing,
         }
+    }
+
+    pub fn get_suggestion(&self) -> Option<String> {
+        self.suggestion.clone()
+    }
+
+    pub fn get_context_name(&self) -> Option<String> {
+        self.context_name.clone()
+    }
+
+    pub fn get_context_path(&self) -> String {
+        self.context_path.clone()
+    }
+
+    pub fn get_error_message(&self) -> String {
+        self.error_message.clone()
+    }
+
+    pub fn get_error_kind(&self) -> NenyrErrorKind {
+        self.error_kind.clone()
+    }
+
+    pub fn get_line_before_error(&self) -> Option<String> {
+        self.error_tracing.get_line_before_error()
+    }
+
+    pub fn get_line_after_error(&self) -> Option<String> {
+        self.error_tracing.get_line_after_error()
+    }
+
+    pub fn get_error_line(&self) -> Option<String> {
+        self.error_tracing.get_error_line()
+    }
+
+    pub fn get_line(&self) -> usize {
+        self.error_tracing.get_line()
+    }
+
+    pub fn get_position(&self) -> usize {
+        self.error_tracing.get_position()
+    }
+
+    pub fn get_column(&self) -> usize {
+        self.error_tracing.get_column()
     }
 }
 

@@ -59,7 +59,7 @@ mod validators {
     pub mod variable_value;
 }
 
-mod error;
+pub mod error;
 mod lexer;
 mod macros;
 mod store;
