@@ -35,7 +35,7 @@ mod interfaces {
     pub mod variables;
 }
 
-mod types {
+pub mod types {
     pub mod aliases;
     pub mod animations;
     pub mod ast;

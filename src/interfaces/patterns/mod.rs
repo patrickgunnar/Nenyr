@@ -392,7 +392,7 @@ impl<'a> NenyrParser<'a> {
             return self.retrieve_nenyr_value(
                 pattern_name,
                 class_name,
-                nickname,
+                format!("nickname;{}", nickname),
                 is_panoramic,
                 breakpoint_name,
                 style_class,

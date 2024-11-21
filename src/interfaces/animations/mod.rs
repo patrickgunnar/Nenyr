@@ -608,7 +608,11 @@ impl<'a> NenyrParser<'a> {
         if let Some(property) = self.convert_nenyr_property_to_css_property(&self.current_token) {
             return self.process_animation_value(animation_name, property, keyframe);
         } else if let NenyrTokens::Identifier(nickname) = self.current_token.clone() {
-            return self.process_animation_value(animation_name, nickname, keyframe);
+            return self.process_animation_value(
+                animation_name,
+                format!("nickname;{}", nickname),
+                keyframe,
+            );
         }
 
         Err(NenyrError::new(
