@@ -10,7 +10,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Processes the entire animation method declaration, which includes
     /// parsing the animation name and its corresponding block.
     ///
@@ -715,13 +715,15 @@ mod tests {
             transform: 'translate(50%, 50%)'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
         assert_eq!(
             format!("{:?}", parser.process_animation_method()),
-            "Ok((\"giddyRespond\", NenyrAnimation { animation_name: \"giddyRespond\", kind: Some(Fraction), progressive_count: None, keyframe: [Fraction { stops: [30.0], properties: {\"bgd\": \"${accentColorVar}\", \"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"} }, Fraction { stops: [40.0], properties: {\"bgd\": \"${accentColorVar}\"} }, Fraction { stops: [4.0], properties: {\"bgd\": \"${accentColorVar}\"} }, Fraction { stops: [50.0, 70.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [5.0, 7.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [70.0, 80.0, 100.0], properties: {\"transform\": \"translate(50%, 50%)\"} }] }))".to_string()
+            "Ok((\"giddyRespond\", NenyrAnimation { animation_name: \"giddyRespond\", kind: Some(Fraction), progressive_count: None, keyframe: [Fraction { stops: [30.0], properties: {\"nickname;bgd\": \"${accentColorVar}\", \"background-color\": \"blue\", \"border\": \"10px solid red\", \"height\": \"100px\", \"width\": \"200px\"} }, Fraction { stops: [40.0], properties: {\"nickname;bgd\": \"${accentColorVar}\"} }, Fraction { stops: [4.0], properties: {\"nickname;bgd\": \"${accentColorVar}\"} }, Fraction { stops: [50.0, 70.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [5.0, 7.0], properties: {\"background-color\": \"blue\"} }, Fraction { stops: [70.0, 80.0, 100.0], properties: {\"transform\": \"translate(50%, 50%)\"} }] }))".to_string()
         );
     }
 
@@ -742,7 +744,9 @@ mod tests {
             backgroundColor: 'pink'
         }),
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
@@ -759,7 +763,9 @@ mod tests {
             width: '${myVar}'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
@@ -776,7 +782,9 @@ mod tests {
             border: '1px solid red'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
@@ -797,7 +805,9 @@ mod tests {
             width: '200px'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
@@ -824,7 +834,9 @@ mod tests {
             width: '200px'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
@@ -863,13 +875,15 @@ mod tests {
             transform: 'translate(50%, 50%)'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
         assert_eq!(
             format!("{:?}", parser.process_animation_method()),
-            "Err(NenyrError { suggestion: Some(\"Ensure that all fraction patterns inside the `giddyRespond` animation block declaration are enclosed with both an opening and closing parenthesis. Correct syntax example: `Animation('giddyRespond') { Fraction([25, 50], { ... }), Fraction([75, 100], { ... }), ... }`.\"), context_name: None, context_path: \"\", error_message: \"One of the fraction patterns in the `giddyRespond` animation is missing an open parenthesis `(` after the pattern keyword declaration. The parser expected a parenthesis to begin the fraction pattern definition. However, found `Number(40.0)` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"        }),\"), line_after: Some(\"            // Este é um comentário de linha.\"), error_line: Some(\"        Fraction 40, {\"), error_on_line: 10, error_on_col: 20, error_on_pos: 299 } })".to_string()
+            "Err(NenyrError { suggestion: Some(\"Ensure that all fraction patterns inside the `giddyRespond` animation block declaration are enclosed with both an opening and closing parenthesis. Correct syntax example: `Animation('giddyRespond') { Fraction([25, 50], { ... }), Fraction([75, 100], { ... }), ... }`.\"), context_name: None, context_path: \"\", error_message: \"One of the fraction patterns in the `giddyRespond` animation is missing an open parenthesis `(` after the pattern keyword declaration. The parser expected a parenthesis to begin the fraction pattern definition. However, found `40` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"        }),\"), line_after: Some(\"            // Este é um comentário de linha.\"), error_line: Some(\"        Fraction 40, {\"), error_on_line: 10, error_on_col: 20, error_on_pos: 299 } })".to_string()
         );
     }
 
@@ -890,7 +904,9 @@ mod tests {
             backgroundColor: 'pink'
         }),
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
@@ -907,13 +923,15 @@ mod tests {
             width '${myVar}'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
         assert_eq!(
             format!("{:?}", parser.process_animation_method()),
-            "Err(NenyrError { suggestion: Some(\"Ensure that each property is defined with a colon after it. The correct syntax is: `pattern({ width: 'property value', ... })`.\"), context_name: None, context_path: \"\", error_message: \"The `width` property inside one of the patterns in the `grotesquePtarmigan` animation is missing a colon after the property keyword definition. However, found `StringLiteral(\\\"${myVar}\\\")` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"        From({\"), line_after: Some(\"        })\"), error_line: Some(\"            width '${myVar}'\"), error_on_line: 3, error_on_col: 29, error_on_pos: 77 } })".to_string()
+            "Err(NenyrError { suggestion: Some(\"Ensure that each property is defined with a colon after it. The correct syntax is: `pattern({ width: 'property value', ... })`.\"), context_name: None, context_path: \"\", error_message: \"The `width` property inside one of the patterns in the `grotesquePtarmigan` animation is missing a colon after the property keyword definition. However, found `${myVar}` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"        From({\"), line_after: Some(\"        })\"), error_line: Some(\"            width '${myVar}'\"), error_on_line: 3, error_on_col: 29, error_on_pos: 77 } })".to_string()
         );
     }
 
@@ -924,7 +942,9 @@ mod tests {
             border: '1px solid red'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
@@ -945,7 +965,9 @@ mod tests {
             width: '200px'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
@@ -972,13 +994,15 @@ mod tests {
             width: '200px'
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 
         assert_eq!(
             format!("{:?}", parser.process_animation_method()),
-            "Err(NenyrError { suggestion: Some(\"All `Animation` declarations must have a non-empty string as a name. The name should contain only alphanumeric characters, with the first character being a letter. The correct syntax is: `Animation('animationName') { ... }`.\"), context_name: None, context_path: \"\", error_message: \"The `Animation` declaration must receive a name that is a non-empty string, but no animation name was found. However, found `StringLiteral(\\\"\\\")` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: None, line_after: Some(\"        From({\"), error_line: Some(\"Animation('') {\"), error_on_line: 1, error_on_col: 13, error_on_pos: 12 } })".to_string()
+            "Err(NenyrError { suggestion: Some(\"All `Animation` declarations must have a non-empty string as a name. The name should contain only alphanumeric characters, with the first character being a letter. The correct syntax is: `Animation('animationName') { ... }`.\"), context_name: None, context_path: \"\", error_message: \"The `Animation` declaration must receive a name that is a non-empty string, but no animation name was found. However, found `` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: None, line_after: Some(\"        From({\"), error_line: Some(\"Animation('') {\"), error_on_line: 1, error_on_col: 13, error_on_pos: 12 } })".to_string()
         );
     }
 
@@ -1007,7 +1031,9 @@ mod tests {
                 width: '200px'
             })
         }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
 

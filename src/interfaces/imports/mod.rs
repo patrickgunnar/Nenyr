@@ -7,7 +7,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Processes the `Imports` declaration method.
     ///
     /// This method initiates the parsing of the `Imports` block by expecting the next token to be a valid
@@ -164,7 +164,11 @@ mod tests {
         Import('../../../mocks/imports/external_styles.css'),
         Import('../../../mocks/imports/styles.css'),
     ])";
-        let mut parser = NenyrParser::new(raw_nenyr, "src/interfaces/imports/central.nyr");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(
+            raw_nenyr.to_string(),
+            "src/interfaces/imports/central.nyr".to_string(),
+        );
 
         let _ = parser.process_next_token();
         let res = parser.process_imports_method().unwrap();
@@ -214,7 +218,11 @@ mod tests {
         Import('../../../mocks/imports/external_styles.css'),
         Import('../../../mocks/imports/styles.css'),
     ])";
-        let mut parser = NenyrParser::new(raw_nenyr, "src/interfaces/imports/central.nyr");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(
+            raw_nenyr.to_string(),
+            "src/interfaces/imports/central.nyr".to_string(),
+        );
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -226,7 +234,11 @@ mod tests {
     #[test]
     fn empty_imports_are_valid() {
         let raw_nenyr = "Imports([ ])";
-        let mut parser = NenyrParser::new(raw_nenyr, "src/interfaces/imports/central.nyr");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(
+            raw_nenyr.to_string(),
+            "src/interfaces/imports/central.nyr".to_string(),
+        );
 
         let _ = parser.process_next_token();
         assert_eq!(

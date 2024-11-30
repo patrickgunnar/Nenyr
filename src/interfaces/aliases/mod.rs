@@ -7,7 +7,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Processes the `Aliases` declaration block in Nenyr syntax.
     ///
     /// This method expects the `Aliases` keyword to be followed by a set of parenthesis, within which
@@ -175,7 +175,9 @@ mod tests {
         wd: width,
         hgt: height
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -194,7 +196,9 @@ mod tests {
         wd: width,
         hgt: height
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -206,7 +210,9 @@ mod tests {
     #[test]
     fn empty_aliases_are_valid() {
         let raw_nenyr = "Aliases({ })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(

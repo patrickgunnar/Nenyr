@@ -31,9 +31,9 @@ use crate::{
 /// * `context_name`: An optional `String` representing the name of the Nenyr context,
 ///   which can be useful for distinguishing between different scopes or modules within the Nenyr document.
 #[derive(Debug, PartialEq, Clone)]
-pub struct Lexer<'a> {
+pub struct Lexer {
     /// The raw input source written in Nenyr language, borrowed for the lifetime of the lexer.
-    raw_nenyr: &'a str,
+    raw_nenyr: String,
     /// The current position in the input string (in bytes), used to track which
     /// character the lexer is processing.
     position: usize,
@@ -42,12 +42,12 @@ pub struct Lexer<'a> {
     /// The current column number within the current line, resets to 1 after each newline.
     column: usize,
     /// The context path for the Nenyr context, providing additional information about the source's origin.
-    context_path: &'a str,
+    context_path: String,
     /// An optional name of the context, useful for distinguishing between different scopes or modules in the Nenyr document.
     context_name: Option<String>,
 }
 
-impl<'a> Lexer<'a> {
+impl Lexer {
     /// Constructs a new `Lexer` instance from the provided raw input string in the Nenyr language.
     ///
     /// The lexer initializes its state at the beginning of the input, setting the position to 0,
@@ -62,7 +62,7 @@ impl<'a> Lexer<'a> {
     /// # Returns
     ///
     /// Returns a `Lexer` struct that is ready to tokenize the provided input string.
-    pub fn new(raw_nenyr: &'a str, context_path: &'a str) -> Self {
+    pub fn new(raw_nenyr: String, context_path: String) -> Self {
         Self {
             raw_nenyr,
             context_path,
@@ -811,7 +811,7 @@ mod tests {
     #[test]
     fn test_empty_input() {
         let input = "";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
     }
@@ -819,7 +819,7 @@ mod tests {
     #[test]
     fn test_single_token() {
         let input = "(";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisOpen));
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
@@ -828,7 +828,7 @@ mod tests {
     #[test]
     fn test_multiple_tokens() {
         let input = "( ) { }";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisOpen));
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisClose));
@@ -840,7 +840,7 @@ mod tests {
     #[test]
     fn test_whitespace_handling() {
         let input = "   ( )   ";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisOpen));
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisClose));
@@ -850,7 +850,7 @@ mod tests {
     #[test]
     fn test_string_literal() {
         let input = "\"hello\"";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(
             lexer.next_token(),
@@ -862,7 +862,7 @@ mod tests {
     #[test]
     fn test_comments() {
         let input = "// this is a comment\n( )";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisOpen));
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::ParenthesisClose));
@@ -872,7 +872,7 @@ mod tests {
     #[test]
     fn test_identifier() {
         let input = "Construct";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::Construct));
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
@@ -881,7 +881,7 @@ mod tests {
     #[test]
     fn test_number() {
         let input = "123";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::Number(123.0)));
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::EndOfLine));
@@ -890,7 +890,7 @@ mod tests {
     #[test]
     fn test_unknown_token() {
         let input = "@";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(
             lexer.next_token(),
@@ -915,7 +915,7 @@ mod tests {
     #[test]
     fn test_unknown_token_before_success() {
         let input = "@ Declare Aliases({}),\nDeclare";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(
             lexer.next_token(),
@@ -942,7 +942,7 @@ mod tests {
     #[test]
     fn test_unknown_token_after_success() {
         let input = "Declare\n@ Declare Aliases({})";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::Declare));
 
@@ -969,7 +969,7 @@ mod tests {
     #[test]
     fn test_unknown_token_between_success() {
         let input = "Declare\n@\nDeclare Aliases({})";
-        let mut lexer = Lexer::new(input, "");
+        let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
         assert_eq!(lexer.next_token(), Ok(NenyrTokens::Declare));
 
@@ -1000,7 +1000,7 @@ mod tests {
         let large_nenyr_vector: Vec<_> = (0..1_000_000).map(|_| "Construct").collect();
 
         for input in large_nenyr_vector {
-            let mut lexer = Lexer::new(input, "");
+            let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
             assert_eq!(lexer.next_token(), Ok(NenyrTokens::Construct));
         }
@@ -1011,7 +1011,7 @@ mod tests {
         let large_nenyr_vector: Vec<_> = (0..1_000_000).map(|_| "aConstruct").collect();
 
         for input in large_nenyr_vector {
-            let mut lexer = Lexer::new(input, "");
+            let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
             assert_eq!(
                 lexer.next_token(),
@@ -1025,7 +1025,7 @@ mod tests {
         let large_nenyr_vector: Vec<_> = (0..1_000_000).map(|_| "@Construct").collect();
 
         for input in large_nenyr_vector {
-            let mut lexer = Lexer::new(input, "");
+            let mut lexer = Lexer::new(input.to_string(), "".to_string());
 
             assert_eq!(
                 lexer.next_token(),

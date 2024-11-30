@@ -7,7 +7,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Processes the `Typefaces` method declaration.
     ///
     /// This method expects to find a `Typefaces` keyword followed by an opening parenthesis,
@@ -172,7 +172,11 @@ mod tests {
         regularWoff: '../../../mocks/typefaces/showa-source-curry.regular-webfont.woff',
         regularWoff2: '../../../mocks/typefaces/showa-source-curry.regular-webfont.woff2'
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "src/interfaces/typefaces/central.nyr");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(
+            raw_nenyr.to_string(),
+            "src/interfaces/typefaces/central.nyr".to_string(),
+        );
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -191,19 +195,27 @@ mod tests {
         regularWoff: '../../mocks/typefaces/showa-source-curry.regular-webfont.woff',
         regularWoff2: '../../../mocks/typefaces/showa-source-curry.regular-webfont.woff2'
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "src/interfaces/typefaces/central.nyr");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(
+            raw_nenyr.to_string(),
+            "src/interfaces/typefaces/central.nyr".to_string(),
+        );
 
         let _ = parser.process_next_token();
         assert_eq!(
             format!("{:?}", parser.process_typefaces_method()),
-            "Err(NenyrError { suggestion: Some(\"Ensure that all typeface values are semantically correct to be validated. Please refer to the documentation to verify the correct way to define typeface values.\"), context_name: None, context_path: \"src/interfaces/typefaces/central.nyr\", error_message: \"The `regularWoff` typeface in the `Typefaces` declaration contains an invalid value and could not be validated. However, found `StringLiteral(\\\"../../mocks/typefaces/showa-source-curry.regular-webfont.woff\\\")` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"        regularTtf: '../../../mocks/typefaces/showa-source-curry.regular-webfont.ttf',\"), line_after: Some(\"        regularWoff2: '../../../mocks/typefaces/showa-source-curry.regular-webfont.woff2'\"), error_line: Some(\"        regularWoff: '../../mocks/typefaces/showa-source-curry.regular-webfont.woff',\"), error_on_line: 6, error_on_col: 85, error_on_pos: 428 } })".to_string()
+            "Err(NenyrError { suggestion: Some(\"Ensure that all typeface values are semantically correct to be validated. Please refer to the documentation to verify the correct way to define typeface values.\"), context_name: None, context_path: \"src/interfaces/typefaces/central.nyr\", error_message: \"The `regularWoff` typeface in the `Typefaces` declaration contains an invalid value and could not be validated. However, found `../../mocks/typefaces/showa-source-curry.regular-webfont.woff` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"        regularTtf: '../../../mocks/typefaces/showa-source-curry.regular-webfont.ttf',\"), line_after: Some(\"        regularWoff2: '../../../mocks/typefaces/showa-source-curry.regular-webfont.woff2'\"), error_line: Some(\"        regularWoff: '../../mocks/typefaces/showa-source-curry.regular-webfont.woff',\"), error_on_line: 6, error_on_col: 85, error_on_pos: 428 } })".to_string()
         );
     }
 
     #[test]
     fn empty_typefaces_are_valid() {
         let raw_nenyr = "Typefaces({ })";
-        let mut parser = NenyrParser::new(raw_nenyr, "src/interfaces/typefaces/central.nyr");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(
+            raw_nenyr.to_string(),
+            "src/interfaces/typefaces/central.nyr".to_string(),
+        );
 
         let _ = parser.process_next_token();
         assert_eq!(

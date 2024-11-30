@@ -10,7 +10,7 @@ use crate::{error::NenyrErrorTracing, tokens::NenyrTokens, NenyrParser, NenyrRes
 /// The methods in this block are intended to enhance the usability and maintainability
 /// of the parser by providing clear interfaces for common tasks, thereby promoting
 /// code readability and efficiency in handling Nenyr language constructs.
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Advances the parser to the next token in the input stream.
     ///
     /// This method retrieves the next token from the lexer and updates the current token
@@ -108,7 +108,8 @@ mod tests {
     #[test]
     fn process_next_token_is_valid() {
         let raw_nenyr = "Construct";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(parser.current_token, NenyrTokens::Construct);
@@ -117,7 +118,8 @@ mod tests {
     #[test]
     fn process_next_token_is_not_valid() {
         let raw_nenyr = "Central";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(parser.current_token, NenyrTokens::Construct);
@@ -126,7 +128,8 @@ mod tests {
     #[test]
     fn get_tracing_is_valid() {
         let raw_nenyr = "Central";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -138,7 +141,8 @@ mod tests {
     #[test]
     fn setting_context_name_is_valid() {
         let raw_nenyr = "Central";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         parser.set_context_name(Some("myContextName".to_string()));
 
@@ -148,7 +152,8 @@ mod tests {
     #[test]
     fn add_nenyr_token_is_valid() {
         let raw_nenyr = "Central";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(

@@ -7,7 +7,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Processes the `PanoramicViewer` pattern within a given class. This method handles the
     /// initial parsing of the pattern by ensuring the syntax conforms to the expected format.
     ///
@@ -230,7 +230,8 @@ mod tests {
     fn panoramic_viewer_stylesheet_is_valid() {
         let raw_nenyr = "({ myBreakpoint({ Stylesheet({ backgroundColor: 'blue', border: '10px solid red' }) }) })";
 
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
         let mut styles = NenyrStyleClass::new("myClassName".to_string(), None);
         let mut style_class = NenyrStyleClass::new("myClassName".to_string(), None);
 
@@ -256,7 +257,8 @@ mod tests {
     fn panoramic_viewer_stylesheet_is_not_valid() {
         let raw_nenyr = "({ myBreakpoint({ Stylesheet( backgroundColor: 'blue', border: '10px solid red' }) }) })";
 
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
         let mut style_class = NenyrStyleClass::new("myClassName".to_string(), None);
 
         assert_eq!(
@@ -273,7 +275,8 @@ mod tests {
         let raw_nenyr =
             "({ myBreakpoint({ After({ backgroundColor: 'blue', border: '10px solid red' }) }) })";
 
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
         let mut styles = NenyrStyleClass::new("myClassName".to_string(), None);
         let mut style_class = NenyrStyleClass::new("myClassName".to_string(), None);
 
@@ -300,7 +303,8 @@ mod tests {
         let raw_nenyr =
             "({ myBreakpoint({ After({ backgroundColor: 'blue', border: '10px solid red' }) ) })";
 
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
         let mut style_class = NenyrStyleClass::new("myClassName".to_string(), None);
 
         assert_eq!(

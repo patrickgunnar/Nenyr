@@ -19,7 +19,7 @@ use crate::{
 /// Each literal parser is designed to handle specific edge cases, such as missing tokens,
 /// invalid formatting, or incomplete expressions, ensuring that the parsing process remains
 /// robust and informative throughout.
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Parses a string literal from the token stream and handles its validation.
     ///
     /// # Parameters
@@ -189,7 +189,8 @@ mod tests {
     #[test]
     fn string_is_valid() {
         let raw_nenyr = r#""This is a valid string""#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -201,7 +202,8 @@ mod tests {
     #[test]
     fn empty_string_is_not_valid() {
         let raw_nenyr = r#""#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
@@ -213,7 +215,8 @@ mod tests {
     #[test]
     fn string_is_not_valid() {
         let raw_nenyr = r#""This is na invalid string"#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
@@ -225,7 +228,8 @@ mod tests {
     #[test]
     fn true_boolean_is_valid() {
         let raw_nenyr = r#"true"#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(parser.parse_boolean_literal(None, "", false), Ok(true));
@@ -234,7 +238,8 @@ mod tests {
     #[test]
     fn false_boolean_is_valid() {
         let raw_nenyr = r#"false"#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(parser.parse_boolean_literal(None, "", false), Ok(false));
@@ -243,7 +248,8 @@ mod tests {
     #[test]
     fn boolean_is_not_valid() {
         let raw_nenyr = r#"Central"#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(parser.parse_boolean_literal(None, "", false), Ok(false));
@@ -252,7 +258,8 @@ mod tests {
     #[test]
     fn identifier_is_valid() {
         let raw_nenyr = r#"thisIsAValidIdentifier"#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -264,7 +271,8 @@ mod tests {
     #[test]
     fn identifier_is_not_valid() {
         let raw_nenyr = r#"this_is_an_invalid_identifier"#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
@@ -276,7 +284,8 @@ mod tests {
     #[test]
     fn empty_identifier_is_not_valid() {
         let raw_nenyr = r#""#;
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(

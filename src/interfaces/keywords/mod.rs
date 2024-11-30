@@ -11,7 +11,7 @@ use crate::{
 /// that the input tokens adhere to the expected syntax rules for these keywords.
 /// The methods return results based on the correctness of the tokens being parsed,
 /// or they generate informative error messages if the syntax does not match expectations.
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Parses the `Construct` keyword in the Nenyr document.
     ///
     /// # Parameters
@@ -99,7 +99,8 @@ mod tests {
     #[test]
     fn construct_keyword_is_valid() {
         let raw_nenyr = "Construct";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(parser.parse_construct_keyword(None, "", |_| Ok(())), Ok(()));
@@ -108,7 +109,8 @@ mod tests {
     #[test]
     fn construct_keyword_is_not_valid() {
         let raw_nenyr = "Construct0";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(parser.parse_construct_keyword(None, "", |_| Ok(())), Ok(()));
@@ -117,7 +119,8 @@ mod tests {
     #[test]
     fn declare_keyword_is_valid() {
         let raw_nenyr = "Declare";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(parser.parse_declare_keyword(None, ""), Ok(()))
@@ -126,7 +129,8 @@ mod tests {
     #[test]
     fn declare_keyword_is_not_valid() {
         let raw_nenyr = "Declare0";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(parser.parse_declare_keyword(None, ""), Ok(()))

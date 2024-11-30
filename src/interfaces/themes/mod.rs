@@ -6,7 +6,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Processes the `Themes` declaration method.
     ///
     /// This function expects to find a `Themes` keyword followed by an opening parenthesis.
@@ -204,7 +204,8 @@ mod tests {
             })
         })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -231,7 +232,8 @@ mod tests {
             })
         })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -243,7 +245,8 @@ mod tests {
     #[test]
     fn empty_themes_are_valid() {
         let raw_nenyr = "Themes({ })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -263,7 +266,8 @@ mod tests {
             })
         })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -283,7 +287,8 @@ mod tests {
             })
         })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -298,7 +303,8 @@ mod tests {
         Light({ }),
         Dark({ })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(

@@ -9,7 +9,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Processes the `Breakpoints` declaration method.
     ///
     /// This method is responsible for parsing the `Breakpoints` declaration within the Nenyr syntax.
@@ -308,7 +308,9 @@ mod tests {
             onDeskXXl: '2240px'
         })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -333,7 +335,9 @@ mod tests {
             onDeskXXl: '2240px'
         })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -346,7 +350,9 @@ mod tests {
     fn empty_themes_are_valid() {
         let raw_nenyr = "Breakpoints({ })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -365,7 +371,9 @@ mod tests {
             onMobXXl: '2240px'
         })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -384,7 +392,9 @@ mod tests {
             onDeskXXl: '2240px'
         })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -399,7 +409,9 @@ mod tests {
         MobileFirst({ }),
         DesktopFirst({ })
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(

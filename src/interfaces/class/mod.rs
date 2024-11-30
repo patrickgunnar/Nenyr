@@ -7,7 +7,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Parses a `Class` declaration in the Nenyr syntax.
     ///
     /// This function processes the following syntax:
@@ -291,7 +291,9 @@ mod tests {
             })
         })
     }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         assert_eq!(
             parser.process_class_method(),
@@ -314,9 +316,14 @@ mod tests {
             bdr: '5px'
         }),
     },";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
 
-        assert_eq!(format!("{:?}", parser.process_class_method()), "Ok((\"myTestingClass\", NenyrStyleClass { class_name: \"myTestingClass\", deriving_from: Some(\"discreteAudio\"), is_important: None, style_patterns: Some({\"_stylesheet\": {\"background-color\": \"#0000FF\", \"background\": \"#00FF00\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}}), responsive_patterns: Some({\"onMobTablet\": {}, \"onDeskDesktop\": {}}) }))".to_string());
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
+
+        assert_eq!(
+            format!("{:?}", parser.process_class_method()),
+            "Ok((\"myTestingClass\", NenyrStyleClass { class_name: \"myTestingClass\", deriving_from: Some(\"discreteAudio\"), is_important: None, style_patterns: Some({\"_stylesheet\": {\"background-color\": \"#0000FF\", \"background\": \"#00FF00\", \"padding\": \"${m15px21}\", \"nickname;bdr\": \"5px\"}}), responsive_patterns: Some({\"onMobTablet\": {}, \"onDeskDesktop\": {}}) }))".to_string()
+        );
     }
 
     #[test]
@@ -334,7 +341,9 @@ mod tests {
             bdr: '5px'
         }),
     ,";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         assert_eq!(format!("{:?}", parser.process_class_method()), "Err(NenyrError { suggestion: Some(\"Remove any duplicated commas from the `myTestingClass` class inner block to ensure proper syntax. The parser expects every pattern block to follow valid delimiters. Example: `Declare Class('myTestingClass') { Stylesheet({ ... }), PanoramicViewer({ ... }), ... }`.\"), context_name: None, context_path: \"\", error_message: \"A duplicated comma was found inside the `myTestingClass` class block. The parser expected to find a new pattern block, but it was not found. However, found `,` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"        }),\"), line_after: None, error_line: Some(\"    ,\"), error_on_line: 13, error_on_col: 6, error_on_pos: 365 } })".to_string());
     }
@@ -370,9 +379,14 @@ mod tests {
             })
         })
     },";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
 
-        assert_eq!(format!("{:?}", parser.process_class_method()), "Ok((\"miniatureTrogon\", NenyrStyleClass { class_name: \"miniatureTrogon\", deriving_from: Some(\"discreteAudio\"), is_important: Some(true), style_patterns: Some({\"_stylesheet\": {\"background-color\": \"#0000FF\", \"background\": \"#00FF00\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}, \":hover\": {\"background\": \"${secondaryColor}\", \"padding\": \"${m15px21}\", \"bdr\": \"5px\"}}), responsive_patterns: Some({\"onMobTablet\": {\"_stylesheet\": {\"display\": \"block\"}}, \"onDeskDesktop\": {\":hover\": {\"bgd\": \"${secondaryColor}\", \"pdg\": \"${m15px}\"}}}) }))".to_string());
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
+
+        assert_eq!(
+            format!("{:?}", parser.process_class_method()),
+            "Ok((\"miniatureTrogon\", NenyrStyleClass { class_name: \"miniatureTrogon\", deriving_from: Some(\"discreteAudio\"), is_important: Some(true), style_patterns: Some({\"_stylesheet\": {\"background-color\": \"#0000FF\", \"background\": \"#00FF00\", \"padding\": \"${m15px21}\", \"nickname;bdr\": \"5px\"}, \":hover\": {\"background\": \"${secondaryColor}\", \"padding\": \"${m15px21}\", \"nickname;bdr\": \"5px\"}}), responsive_patterns: Some({\"onMobTablet\": {\"_stylesheet\": {\"display\": \"block\"}}, \"onDeskDesktop\": {\":hover\": {\"nickname;bgd\": \"${secondaryColor}\", \"nickname;pdg\": \"${m15px}\"}}}) }))".to_string()
+        );
     }
 
     #[test]
@@ -406,15 +420,22 @@ mod tests {
             })
         })
     },";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
 
-        assert_eq!(format!("{:?}", parser.process_class_method()), "Err(NenyrError { suggestion: Some(\"Ensure that an opening parenthesis `(` is placed after the keyword `Class` to properly define the class name. The correct syntax is: `Class('className') { ... }`.\"), context_name: None, context_path: \"\", error_message: \"The declaration block of `Class` was expecting an open parenthesis `(` after the keyword `Class`, but none was found. However, found `StringLiteral(\\\"miniatureTrogon\\\")` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: None, line_after: Some(\"        Important(true),\"), error_line: Some(\"'miniatureTrogon') Deriving('discreteAudio') {\"), error_on_line: 1, error_on_col: 18, error_on_pos: 17 } })".to_string());
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
+
+        assert_eq!(
+            format!("{:?}", parser.process_class_method()),
+            "Err(NenyrError { suggestion: Some(\"Ensure that an opening parenthesis `(` is placed after the keyword `Class` to properly define the class name. The correct syntax is: `Class('className') { ... }`.\"), context_name: None, context_path: \"\", error_message: \"The declaration block of `Class` was expecting an open parenthesis `(` after the keyword `Class`, but none was found. However, found `miniatureTrogon` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: None, line_after: Some(\"        Important(true),\"), error_line: Some(\"'miniatureTrogon') Deriving('discreteAudio') {\"), error_on_line: 1, error_on_col: 18, error_on_pos: 17 } })".to_string()
+        );
     }
 
     #[test]
     fn empty_class_is_not_valid() {
         let raw_nenyr = "";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         assert_eq!(format!("{:?}", parser.process_class_method()), "Err(NenyrError { suggestion: Some(\"Ensure that an opening parenthesis `(` is placed after the keyword `Class` to properly define the class name. The correct syntax is: `Class('className') { ... }`.\"), context_name: None, context_path: \"\", error_message: \"The declaration block of `Class` was expecting an open parenthesis `(` after the keyword `Class`, but none was found. However, found `EndOfLine` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: None, line_after: None, error_line: None, error_on_line: 1, error_on_col: 1, error_on_pos: 0 } })".to_string());
     }

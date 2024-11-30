@@ -7,7 +7,7 @@ use crate::{
     NenyrParser, NenyrResult,
 };
 
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Processes the `Variables` method within the Nenyr syntax.
     ///
     /// This method begins by checking for the opening parenthesis that should follow
@@ -272,7 +272,8 @@ mod tests {
         primaryColor: 'yellow',
         secondaryColor: 'white'
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -292,19 +293,21 @@ mod tests {
         primaryColor: 'yellow',
         secondaryColor: 'white'
     })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
             format!("{:?}", parser.process_variables_method(false)),
-            "Err(NenyrError { suggestion: Some(\"Ensure that each variable is defined with a colon after it. The correct syntax is: `Variables({ myColor: 'variable value', ... })`.\"), context_name: None, context_path: \"\", error_message: \"The `myColor` variable in the `Variables` declaration is missing a colon after the variable name definition. However, found `StringLiteral(\\\"#FF6677\\\")` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"Variables({\"), line_after: Some(\"        grayColor: 'gray',\"), error_line: Some(\"        myColor '#FF6677',\"), error_on_line: 2, error_on_col: 26, error_on_pos: 37 } })".to_string()
+            "Err(NenyrError { suggestion: Some(\"Ensure that each variable is defined with a colon after it. The correct syntax is: `Variables({ myColor: 'variable value', ... })`.\"), context_name: None, context_path: \"\", error_message: \"The `myColor` variable in the `Variables` declaration is missing a colon after the variable name definition. However, found `#FF6677` instead.\", error_kind: SyntaxError, error_tracing: NenyrErrorTracing { line_before: Some(\"Variables({\"), line_after: Some(\"        grayColor: 'gray',\"), error_line: Some(\"        myColor '#FF6677',\"), error_on_line: 2, error_on_col: 26, error_on_pos: 37 } })".to_string()
         );
     }
 
     #[test]
     fn empty_variables_are_valid() {
         let raw_nenyr = "Variables({ })";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(

@@ -21,7 +21,7 @@ use crate::{
 /// This group is currently focused on foundational delimiter parsing methods, with
 /// plans to expand its functionality to include additional delimiter types in future
 /// implementations.
-impl<'a> NenyrParser<'a> {
+impl NenyrParser {
     /// Implements parsing of a block enclosed in curly brackets (`{}`) and provides flexible error handling.
     ///
     /// This method attempts to parse an opening curly bracket (`{`), executes a provided parsing function
@@ -314,7 +314,9 @@ mod tests {
     #[test]
     fn bracketed_section_is_valid() {
         let raw_nenyr = "{ }";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -326,7 +328,9 @@ mod tests {
     #[test]
     fn bracketed_section_missing_opening_curly_bracket() {
         let raw_nenyr = "}";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
@@ -338,7 +342,9 @@ mod tests {
     #[test]
     fn bracketed_section_missing_closing_curly_bracket() {
         let raw_nenyr = "{";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
@@ -350,7 +356,9 @@ mod tests {
     #[test]
     fn parenthesized_section_is_valid() {
         let raw_nenyr = "( )";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -362,7 +370,9 @@ mod tests {
     #[test]
     fn parenthesized_section_missing_opening_parenthesis() {
         let raw_nenyr = ")";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
@@ -374,7 +384,9 @@ mod tests {
     #[test]
     fn parenthesized_section_missing_closing_parenthesis() {
         let raw_nenyr = "(";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
@@ -386,7 +398,9 @@ mod tests {
     #[test]
     fn colon_is_valid() {
         let raw_nenyr = ":";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(parser.parse_colon_delimiter(None, "", false), Ok(()));
@@ -395,7 +409,9 @@ mod tests {
     #[test]
     fn colon_is_not_valid() {
         let raw_nenyr = ";";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(parser.parse_colon_delimiter(None, "", false), Ok(()));
@@ -404,7 +420,9 @@ mod tests {
     #[test]
     fn squared_section_is_valid() {
         let raw_nenyr = "[] ]";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_eq!(
@@ -416,7 +434,9 @@ mod tests {
     #[test]
     fn squared_section_missing_opening_square_bracket() {
         let raw_nenyr = "]";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
@@ -428,7 +448,9 @@ mod tests {
     #[test]
     fn squared_section_missing_closing_square_bracket() {
         let raw_nenyr = "[";
-        let mut parser = NenyrParser::new(raw_nenyr, "");
+        let mut parser = NenyrParser::new();
+
+        parser.setup_dependencies(raw_nenyr.to_string(), "".to_string());
 
         let _ = parser.process_next_token();
         assert_ne!(
