@@ -1,4 +1,10 @@
+use lazy_static::lazy_static;
 use regex::Regex;
+
+lazy_static! {
+    static ref RE: Regex =
+        Regex::new(r"^(\d+(\.\d+)?|0)?\s*(px|em|rem|vh|vw|vmin|vmax|cm|mm|in|pt|pc|%)$").unwrap();
+}
 
 /// A trait responsible for validating breakpoint values.
 ///
@@ -34,10 +40,7 @@ pub trait NenyrBreakpointValidator {
     /// # Returns
     /// - `bool`: `true` if the breakpoint is valid; `false` if invalid.
     fn is_valid_breakpoint(&self, breakpoint: &str) -> bool {
-        let re = Regex::new(r"^(\d+(\.\d+)?|0)?\s*(px|em|rem|vh|vw|vmin|vmax|cm|mm|in|pt|pc|%)$")
-            .unwrap();
-
-        re.is_match(breakpoint)
+        RE.is_match(breakpoint)
     }
 }
 

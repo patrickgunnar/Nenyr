@@ -1,4 +1,9 @@
+use lazy_static::lazy_static;
 use regex::Regex;
+
+lazy_static! {
+    static ref INVALID_CHARS: Regex = Regex::new(r"[@!;:]").unwrap();
+}
 
 /// A trait responsible for validating the syntax of style rules.
 ///
@@ -36,9 +41,7 @@ pub trait NenyrStyleSyntaxValidator {
     /// - `false` if the syntax is invalid (i.e., contains one or
     ///   more of the invalid characters defined).
     fn is_valid_style_syntax(&self, rule: &str) -> bool {
-        let invalid_chars = Regex::new(r"[@!;:]").unwrap();
-
-        !invalid_chars.is_match(rule)
+        !INVALID_CHARS.is_match(rule)
     }
 }
 

@@ -1,4 +1,22 @@
+use lazy_static::lazy_static;
 use regex::Regex;
+
+lazy_static! {
+    static ref INVALID_CHAR_REGEX: Regex = Regex::new(r"[{}@$!;:]").unwrap();
+    static ref INCOMPLETE_FUNCTION_REGEX: Regex =
+        Regex::new(r"(rgb|rgba|hsl|calc|url|linear-gradient)\([^)]*$").unwrap();
+    static ref UNBALANCED_QUOTES_REGEX: Regex =
+        Regex::new(r#"(?:(?:[^"]*"){1,})|(?:[^']*'){1,}"#).unwrap();
+    static ref COMMENTS_REGEX: Regex = Regex::new(r"/\*.*\*/").unwrap();
+    static ref INVALID_KEYWORD_REGEX: Regex = Regex::new(r"^(undefined|invalid|NaN)$").unwrap();
+    static ref INVALID_URL_REGEX: Regex = Regex::new(r#"url\(\s*\)"#).unwrap();
+    static ref INVALID_PROPERTY_REGEX: Regex = Regex::new(r"^\w+\s*:\s*\w+$").unwrap();
+
+    //static ref NUMBER_WITHOUT_UNIT_REGEX: Regex = Regex::new(r"^\d+$").unwrap();
+    //static ref INVALID_NUMBER_UNIT_REGEX: Regex = Regex::new(r"^\d+\s+[a-zA-Z]+$").unwrap();
+    //static ref INVALID_UNIT_REGEX: Regex = Regex::new(r"^\d+[a-zA-Z]+$").unwrap();
+    //static ref INVALID_NEGATIVE_VALUE_REGEX: Regex = Regex::new(r"^-?\d+(\.\d+)?[a-zA-Z]+$").unwrap();
+}
 
 /// Trait for validating variable values used in the Nenyr DSL.
 ///
@@ -32,44 +50,15 @@ pub trait NenyrVariableValueValidator {
     ///
     /// - `variable_value`: A string slice representing the variable value to validate.
     fn is_valid_variable_value(&self, variable_value: &str) -> bool {
-        // Regular expression to match invalid characters such as `{`, `}`, `@`, `$`, `!`, `;`, and `:`.
-        let invalid_char_regex = Regex::new(r"[{}@$!;:]").unwrap();
-
-        // Regular expression to match incomplete functions, such as `rgb(`, `rgba(`, `hsl(`, `calc(`, or `url(`
-        // that do not have closing parentheses.
-        let incomplete_function_regex =
-            Regex::new(r"(rgb|rgba|hsl|calc|url|linear-gradient)\([^)]*$").unwrap();
-
-        // Regular expression to match unbalanced quotes. This regex matches values with an odd number of quotes.
-        let unbalanced_quotes_regex = Regex::new(r#"(?:(?:[^"]*"){1,})|(?:[^']*'){1,}"#).unwrap();
-
-        // Regular expression to match comments (e.g., `/* comment */`).
-        let comments_regex = Regex::new(r"/\*.*\*/").unwrap();
-
-        // Regular expression to match known invalid keywords such as `undefined`, `invalid`, and `NaN`.
-        let invalid_keyword_regex = Regex::new(r"^(undefined|invalid|NaN)$").unwrap();
-
-        // Regular expression to match invalid URL format, specifically `url()` with no content inside.
-        let invalid_url_regex = Regex::new(r#"url\(\s*\)"#).unwrap();
-
-        // Regular expression to match invalid property format, such as `property: value` where both are words.
-        let invalid_property_regex = Regex::new(r"^\w+\s*:\s*\w+$").unwrap();
-
-        // TODO: Improve this group later.
-        //let number_without_unit_regex = Regex::new(r"^\d+$").unwrap();
-        //let invalid_number_unit_regex = Regex::new(r"^\d+\s+[a-zA-Z]+$").unwrap();
-        //let invalid_unit_regex = Regex::new(r"^\d+[a-zA-Z]+$").unwrap();
-        //let invalid_negative_value_regex = Regex::new(r"^-?\d+(\.\d+)?[a-zA-Z]+$").unwrap();
-
         // Validate the value by ensuring it does not match any of the invalid patterns.
-        !invalid_char_regex.is_match(variable_value)
-            && !incomplete_function_regex.is_match(variable_value)
-            && !unbalanced_quotes_regex.is_match(variable_value)
-            && !comments_regex.is_match(variable_value)
-            && !invalid_keyword_regex.is_match(variable_value)
+        !INVALID_CHAR_REGEX.is_match(variable_value)
+            && !INCOMPLETE_FUNCTION_REGEX.is_match(variable_value)
+            && !UNBALANCED_QUOTES_REGEX.is_match(variable_value)
+            && !COMMENTS_REGEX.is_match(variable_value)
+            && !INVALID_KEYWORD_REGEX.is_match(variable_value)
             //&& !invalid_color_name_regex.is_match(variable_value)
-            && !invalid_url_regex.is_match(variable_value)
-            && !invalid_property_regex.is_match(variable_value)
+            && !INVALID_URL_REGEX.is_match(variable_value)
+            && !INVALID_PROPERTY_REGEX.is_match(variable_value)
     }
 }
 

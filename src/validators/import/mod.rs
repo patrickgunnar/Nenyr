@@ -1,6 +1,11 @@
 use std::path::Path;
 
+use lazy_static::lazy_static;
 use regex::Regex;
+
+lazy_static! {
+    static ref URL_REGEX: Regex = Regex::new(r"^(https?|ftp)://[^\s/$.?#].[^\s]*$").unwrap();
+}
 
 /// A trait responsible for validating the import of external CSS styles.
 ///
@@ -37,9 +42,7 @@ pub trait NenyrImportValidator {
             return false;
         }
 
-        let url_regex = Regex::new(r"^(https?|ftp)://[^\s/$.?#].[^\s]*$").unwrap();
-
-        if url_regex.is_match(import) {
+        if URL_REGEX.is_match(import) {
             return true;
         }
 
