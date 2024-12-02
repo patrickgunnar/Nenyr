@@ -129,6 +129,9 @@ impl NenyrParser {
     pub(crate) fn setup_dependencies(&mut self, raw_nenyr: String, context_path: String) {
         self.context_path = context_path.to_owned();
         self.lexer = Lexer::new(raw_nenyr, context_path);
+        self.context_name = None;
+        self.current_token = NenyrTokens::StartOfFile;
+        self.processing_state = NenyrProcessStore::new();
     }
 
     /// Parses the raw Nenyr input and constructs an AST.
