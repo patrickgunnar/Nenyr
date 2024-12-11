@@ -86,6 +86,7 @@ pub type NenyrResult<T> = Result<T, NenyrError>;
 /// - `current_token`: The token currently being processed, represented as a `NenyrTokens`.
 /// - `processing_state`: An instance of `NenyrProcessStore` that maintains the state
 ///   during parsing operations.
+#[derive(Clone, PartialEq, Debug)]
 pub struct NenyrParser {
     lexer: Lexer,
     context_path: String,
