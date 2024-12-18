@@ -544,6 +544,7 @@ impl Lexer {
             "Empty" => NenyrTokens::Empty,
 
             // Nenyr properties group
+            "flexGrow" => NenyrTokens::FlexGrow,
             "aspectRatio" => NenyrTokens::AspectRatio,
             "accentColor" => NenyrTokens::AccentColor,
             "backdropFilter" => NenyrTokens::BackdropFilter,

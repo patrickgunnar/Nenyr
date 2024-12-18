@@ -49,6 +49,7 @@ pub trait NenyrPropertyConverter {
     /// A `Some(String)` containing the CSS property name that matches the given Nenyr token.
     fn convert_nenyr_property_to_css_property(&self, nenyr_token: &NenyrTokens) -> Option<String> {
         match nenyr_token {
+            NenyrTokens::FlexGrow => Some("flex-grow".to_string()),
             NenyrTokens::AspectRatio => Some("aspect-ratio".to_string()),
             NenyrTokens::AccentColor => Some("accent-color".to_string()),
             NenyrTokens::BackdropFilter => Some("backdrop-filter".to_string()),
