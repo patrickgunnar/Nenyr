@@ -40,19 +40,16 @@ pub trait NenyrTypefaceValidator {
     /// A boolean value:
     /// - `true` if the `typeface_path` exists, and its extension matches one of the valid typeface extensions.
     /// - `false` if the path is invalid, non-existent, or has an unsupported file extension.
-    fn is_valid_typeface(&self, typeface_path: &str, context_path: &str) -> bool {
+    fn is_valid_typeface(&self, typeface_path: &str) -> bool {
         if !typeface_path.is_empty() {
-            let context_path = Path::new(context_path);
+            let typeface_path = Path::new(typeface_path);
 
-            if let Some(parent) = context_path.parent() {
-                let joined_path = parent.join(typeface_path);
+            if typeface_path.is_absolute() || typeface_path.parent().is_some() {
+                if let Some(ext) = typeface_path.extension() {
+                    let ext = ext.to_string_lossy().to_string();
 
-                if joined_path.exists() {
-                    let split_typeface = typeface_path.split(".");
-
-                    if let Some(ext) = split_typeface.last() {
-                        return vec!["woff", "woff2", "ttf", "otf", "eot", "svg"].contains(&ext);
-                    }
+                    return vec!["woff", "woff2", "ttf", "otf", "eot", "svg"]
+                        .contains(&ext.as_str());
                 }
             }
         }
@@ -78,7 +75,6 @@ mod tests {
     #[test]
     fn all_typefaces_are_valid() {
         let typeface = Typeface::new();
-        let context_path = "src/validators/typeface/typeface_context.nyr";
         let typeface_paths = vec![
             "../../../mocks/typefaces/rosemartin.regular.otf",
             "../../../mocks/typefaces/showa-source-curry.regular-webfont.eot",
@@ -89,14 +85,13 @@ mod tests {
         ];
 
         for typeface_path in typeface_paths {
-            assert!(typeface.is_valid_typeface(typeface_path, context_path));
+            assert!(typeface.is_valid_typeface(typeface_path));
         }
     }
 
     #[test]
     fn all_typefaces_are_not_valid() {
         let typeface = Typeface::new();
-        let context_path = "src/validators/typeface/typeface_context.nyr";
         let typeface_paths = vec![
             "../../../mocks/typefaces/rosemartin.regular.ot2",
             "../../../mocks/typefaces/showa-source-curry.regular-webfont.fot",
@@ -114,15 +109,14 @@ mod tests {
         ];
 
         for typeface_path in typeface_paths {
-            assert!(!typeface.is_valid_typeface(typeface_path, context_path));
+            assert!(!typeface.is_valid_typeface(typeface_path));
         }
     }
 
     #[test]
     fn test_empty_typeface_path() {
         let typeface = Typeface::new();
-        let context_path = "src/validators/import/typeface_context.nyr";
 
-        assert!(!typeface.is_valid_typeface("", &context_path));
+        assert!(!typeface.is_valid_typeface(""));
     }
 }

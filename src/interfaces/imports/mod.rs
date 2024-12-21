@@ -123,7 +123,7 @@ impl NenyrParser {
                 ),
             )?;
 
-            if !self.is_valid_import(&value, &self.context_path) {
+            if !self.is_valid_import(&value) {
                 return Err(NenyrError::new(
                     Some("Ensure that all import values are semantically correct to be validated. Please refer to the documentation to verify the correct way to define import values.".to_string()),
                     self.context_name.clone(),

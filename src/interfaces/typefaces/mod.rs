@@ -141,7 +141,7 @@ impl NenyrParser {
             false
         )?;
 
-        if self.is_valid_typeface(&value, &self.context_path) {
+        if self.is_valid_typeface(&value) {
             typefaces.add_typeface(identifier, value);
 
             return Ok(());

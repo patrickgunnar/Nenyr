@@ -37,7 +37,7 @@ lazy_static! {
 /// Returns `true` if the import is valid according to the specified rules;
 /// otherwise, it returns `false`.
 pub trait NenyrImportValidator {
-    fn is_valid_import(&self, import: &str, context_path: &str) -> bool {
+    fn is_valid_import(&self, import: &str) -> bool {
         if import.is_empty() {
             return false;
         }
@@ -46,12 +46,10 @@ pub trait NenyrImportValidator {
             return true;
         }
 
-        let context_path = Path::new(context_path);
+        let import_path = Path::new(import);
 
-        if let Some(parent) = context_path.parent() {
-            let joined_path = parent.join(import);
-
-            return joined_path.exists();
+        if import_path.is_absolute() || import_path.parent().is_some() {
+            return true;
         }
 
         false
@@ -75,7 +73,6 @@ mod tests {
     #[test]
     fn all_imports_are_valid() {
         let import = Import::new();
-        let context_path = "src/validators/import/import_context.nyr";
         let external_paths = vec![
             "../../../mocks/imports/another_external.css",
             "../../../mocks/imports/external_styles.css",
@@ -86,14 +83,13 @@ mod tests {
         ];
 
         for external_path in external_paths {
-            assert!(import.is_valid_import(external_path, &context_path));
+            assert!(import.is_valid_import(external_path));
         }
     }
 
     #[test]
     fn all_imports_are_not_valid() {
         let import = Import::new();
-        let context_path = "src/validators/import/import_context.nyr";
         let external_paths = vec![
             "../../mocks/imports/another_external.css",
             "../../mocks/imports/external_styles.css",
@@ -104,14 +100,13 @@ mod tests {
         ];
 
         for external_path in external_paths {
-            assert!(!import.is_valid_import(external_path, &context_path));
+            assert!(!import.is_valid_import(external_path));
         }
     }
 
     #[test]
     fn test_invalid_relative_paths() {
         let import = Import::new();
-        let context_path = "src/validators/import/import_context.nyr";
 
         let invalid_paths = vec![
             "../../../mocks/imports/nonexistent_file.css",
@@ -121,24 +116,22 @@ mod tests {
         ];
 
         for external_path in invalid_paths {
-            assert!(!import.is_valid_import(&external_path, &context_path));
+            assert!(!import.is_valid_import(&external_path));
         }
     }
 
     #[test]
     fn test_empty_import_path() {
         let import = Import::new();
-        let context_path = "src/validators/import/import_context.nyr";
 
-        assert!(!import.is_valid_import("", &context_path));
+        assert!(!import.is_valid_import(""));
     }
 
     #[test]
     fn test_http_import() {
         let import = Import::new();
-        let context_path = "src/validators/import/import_context.nyr";
 
         // Testa um caminho http válido
-        assert!(import.is_valid_import("http://example.com/styles.css", &context_path));
+        assert!(import.is_valid_import("http://example.com/styles.css"));
     }
 }
