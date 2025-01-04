@@ -1,7 +1,7 @@
 [package]
 name = "nenyr"
 description = "The initial version of the Nenyr parser delivers robust foundational capabilities for interpreting Nenyr syntax. It intelligently processes central, layout, and module contexts, handling complex variable, aliases, themes, breakpoints, imports, typefaces definitions and precise class and animation declarations. Equipped with advanced tokenization, the parser ensures efficient parsing while offering detailed, context-aware error reporting. Designed for scalability, it provides the groundwork for seamless integration with larger projects, enabling future enhancements to support more complex styles and features. This version ensures both clarity and reliability in parsing, paving the way for continued innovation within the Nenyr ecosystem."
-version = "1.0.0-beta.0"
+version = "1.0.0-beta.1"
 edition = "2021"
 license-file = "LICENSE.md"
 repository = "https://github.com/patrickgunnar/nenyr"

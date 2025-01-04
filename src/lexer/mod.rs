@@ -544,6 +544,7 @@ impl Lexer {
             "Empty" => NenyrTokens::Empty,
 
             // Nenyr properties group
+            "all" => NenyrTokens::All,
             "hyphens" => NenyrTokens::Hyphens,
             "flexGrow" => NenyrTokens::FlexGrow,
             "aspectRatio" => NenyrTokens::AspectRatio,

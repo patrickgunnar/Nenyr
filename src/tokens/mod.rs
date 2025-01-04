@@ -92,6 +92,7 @@ pub enum NenyrTokens {
     PanoramicViewer,
 
     // Nenyr Properties
+    All,
     Hyphens,
     FlexGrow,
     AspectRatio,
